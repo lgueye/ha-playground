@@ -1,0 +1,26 @@
+# usage
+# export ANSIBLE_TF_DIR=../terraform/ && ansible-playbook --vault-id ~/.ansible_vault_pass.txt -i /etc/ansible/terraform.py consul_server.yml -e "target_env=staging"
+
+# Locally register inventory hosts
+- hosts: 'localhost'
+  connection: 'local'
+  gather_facts: yes
+  roles:
+  - { role: 'cockroachdb/download_cockroachdb' }
+  - { role: 'cockroachdb/produce_cockroachdb_certs' }
+
+- hosts: "&{{ target_env }}:&cockroachdb-server"
+  remote_user: "root"
+  become: 'yes'
+  roles:
+  - { role: 'cockroachdb/deploy_cockroachdb' }
+  - { role: 'cockroachdb/deploy_cockroachdb_certs', node_role: 'node'}
+#  - { role: 'cockroachdb/deploy_cockroachdb_certs', node_role: 'client', cockroach_user: 'root'}
+  - { role: 'cockroachdb/upgrade_cockroachdb'}
+
+- hosts: "{{ target_env }}:&cockroachdb-master"
+  remote_user: "root"
+  become: 'yes'
+  roles:
+  - { role: 'cockroachdb/initialize_cockroach_cluster' }
+  - { role: 'cockroachdb/db_privileges' }

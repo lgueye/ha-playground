@@ -1,0 +1,36 @@
+# usage
+# export ANSIBLE_TF_DIR=../terraform/ && ansible-playbook --vault-id ~/.ansible_vault_pass.txt -i /etc/ansible/terraform.py consul_client.yml -e "target_env=staging"
+
+- hosts: "&{{ target_env }}:&consul-client"
+  remote_user: "root"
+  become: 'yes'
+  roles:
+  - { role: 'consul/deploy_consul' }
+
+# Upgrade consul on all clients
+- hosts: "{{target_env}}:&consul-client"
+  remote_user: "root"
+  become: 'yes'
+  tasks:
+  - block:
+    - include_role: {name: 'oefenweb.dnsmasq'}
+    - name: "[systemd-resolved vs dnsmasq conflict]: update local name server"
+      lineinfile:
+        path: /etc/resolv.conf
+        regexp: '^nameserver 127.0.0.53'
+        line: 'nameserver 127.0.0.1'
+    - name: "[systemd-resolved vs dnsmasq conflict]: stop systemd-resolved.service"
+      service: name="systemd-resolved" state='stopped'
+    - name: "[systemd-resolved vs dnsmasq conflict]: disable systemd-resolved.service"
+      service: name="systemd-resolved" enabled='false'
+    - name: "[systemd-resolved vs dnsmasq conflict]: restart dnsmasq.service"
+      service: name="dnsmasq" state='restarted'
+    rescue:
+    - fail:
+        msg: "Failed to upgrade consul client"
+
+- hosts: "&{{ target_env }}:&consul-client"
+  remote_user: "root"
+  become: 'yes'
+  roles:
+  - { role: 'consul/upgrade_consul', node_role: 'client'}

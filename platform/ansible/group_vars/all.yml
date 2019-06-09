@@ -4,6 +4,7 @@ htpasswd_path: '/etc/nginx/passwdfile'
 
 # systemd shared vars
 service_startup_timeout: 60
+servicename: 'careassist'
 
 # consul shared vars
 architecture_map:
@@ -32,3 +33,22 @@ consul_os_packages: ['unzip']
 consul_checksum_file_url: "https://releases.hashicorp.com/{{ consul_product }}/{{ consul_version }}/{{ consul_product }}_{{ consul_version}}_SHA256SUMS"
 consul_pkg: "{{ consul_product }}_{{ consul_version }}_{{ os_family }}_{{ os_architecture }}"
 consul_zip_url: "https://releases.hashicorp.com/{{ consul_product }}/{{ consul_version }}/{{ consul_pkg }}.zip"
+cockroachdb_local_certs_dir: "{{ cockroachdb_download_dir }}/certs"
+cockroach_users: ["root", "{{ servicename }}"]
+
+service_password: !vault |
+    $ANSIBLE_VAULT;1.1;AES256
+    34356131633164313534383632653231653430303335333165363834653461333264356663616362
+    6233656465616333663931356665616630376336626463360a623166376538646438376539353063
+    32633366653535643266316361313037626434353033376631363932396364633937386261393430
+    6231643561393163360a666362386562333134326661643461393636376639336263336634666232
+    3537
+
+cockroachdb_service_password: "{{ service_password }}"
+
+cockroachdb_product: 'cockroach'
+cockroachdb_version: '19.1.1'
+
+cockroachdb_pkg: "{{ cockroachdb_product }}-v{{ cockroachdb_version}}.{{ os_family }}-{{ os_architecture }}"
+cockroachdb_tgz_url: "https://binaries.cockroachdb.com/{{ cockroachdb_pkg }}.tgz"
+cockroachdb_download_dir: "/tmp/{{ cockroachdb_product }}/downloads"
