@@ -1,3 +1,11 @@
+domain: "agileinfra.io"
+
+htpasswd_path: '/etc/nginx/passwdfile'
+
+# systemd shared vars
+service_startup_timeout: 60
+
+# consul shared vars
 architecture_map:
   # this first entry seems redundant
   # (but it's required for reasons)
@@ -16,6 +24,11 @@ os_family: "\
     {{ ansible_system | lower }}\
   {% endif %}"
 
-domain: "agileinfra.io"
+consul_product: 'consul'
+consul_version: '1.2.3'
+consul_download_dir: '/tmp/{{ consul_product }}/downloads'
 
-htpasswd_path: '/etc/nginx/passwdfile'
+consul_os_packages: ['unzip']
+consul_checksum_file_url: "https://releases.hashicorp.com/{{ consul_product }}/{{ consul_version }}/{{ consul_product }}_{{ consul_version}}_SHA256SUMS"
+consul_pkg: "{{ consul_product }}_{{ consul_version }}_{{ os_family }}_{{ os_architecture }}"
+consul_zip_url: "https://releases.hashicorp.com/{{ consul_product }}/{{ consul_version }}/{{ consul_pkg }}.zip"

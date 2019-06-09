@@ -6,15 +6,6 @@ consuldemo_password: !vault |
     6231643561393163360a666362386562333134326661643461393636376639336263336634666232
     3537
 
-consul_product: 'consul'
-consul_version: '1.2.3'
-
-consul_os_packages: ['unzip']
-consul_checksum_file_url: "https://releases.hashicorp.com/{{ consul_product }}/{{ consul_version }}/{{ consul_product }}_{{ consul_version}}_SHA256SUMS"
-consul_pkg: "{{ consul_product }}_{{ consul_version }}_{{ os_family }}_{{ os_architecture }}"
-consul_zip_url: "https://releases.hashicorp.com/{{ consul_product }}/{{ consul_version }}/{{ consul_pkg }}.zip"
-consul_download_dir: '/tmp/{{ consul_product }}/downloads'
-
 consul_user: '{{ consul_product }}'
 consul_home: '/var/lib/{{ consul_product }}'
 consul_group: '{{ consul_product }}'

@@ -1,5 +1,6 @@
 ---
-- name: "Create consul download dir {{ consul_download_dir }} if needed "
+
+- name: "Create consul download dir {{ consul_download_dir }} if needed"
   file: state='directory' dest="{{ consul_download_dir }}"
 
 - name: "Read package checksum file from {{ consul_download_dir }}/consul_{{ consul_version }}_SHA256SUMS"
