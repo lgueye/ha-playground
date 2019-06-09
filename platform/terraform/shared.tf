@@ -1,4 +1,12 @@
-variable "target_env" {}
+# provider variables
+variable "do_token" {}
+variable "pub_key" {}
+variable "pvt_key" {}
+variable "ssh_fingerprint" {}
+
+provider "digitalocean" {
+  token = "${var.do_token}"
+}
 
 # droplets specs
 variable "droplet_image" {
@@ -27,6 +35,8 @@ variable "droplet_size" {
 }
 
 # target environment
+variable "target_env" {}
+
 resource "digitalocean_tag" "target_env" {
   name = "${var.target_env}"
 }
@@ -34,4 +44,12 @@ resource "digitalocean_tag" "target_env" {
 # ansible vars
 variable "ansible_python_interpreter" {
   default = "/usr/bin/python3"
+}
+
+# consul shared vars
+variable "consul_client_role" {
+  default = "consul-client"
+}
+resource "digitalocean_tag" "consul_client_role" {
+  name = "${var.consul_client_role}"
 }

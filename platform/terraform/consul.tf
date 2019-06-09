@@ -1,20 +1,8 @@
-# apply usage
-# terraform apply -var "do_token=${DO_API_TOKEN}" -var "pub_key=${HOME}/.ssh/id_rsa.pub" -var "pvt_key=${HOME}/.ssh/id_rsa" -var "ssh_fingerprint=`ssh-keygen -lf ~/.ssh/id_rsa.pub -E md5  | awk '{ print $2 }' | cut -c 5-`" -var "target_env=staging"
-
-# destroy usage
-# terraform destroy -var "do_token=${DO_API_TOKEN}" -var "pub_key=${HOME}/.ssh/id_rsa.pub" -var "pvt_key=${HOME}/.ssh/id_rsa" -var "ssh_fingerprint=`ssh-keygen -lf ~/.ssh/id_rsa.pub -E md5  | awk '{ print $2 }' | cut -c 5-`" -var "target_env=staging"
-
 # consul cluster vars
-variable "consul_client_role" {
-  default = "consul-client"
-}
 variable "consul_server_role" {
   default = "consul-server"
 }
 
-resource "digitalocean_tag" "consul_client_role" {
-  name = "${var.consul_client_role}"
-}
 resource "digitalocean_tag" "consul_server_role" {
   name = "${var.consul_server_role}"
 }
@@ -28,6 +16,7 @@ resource "digitalocean_droplet" "consul_server_01_droplet" {
   ssh_keys = ["${var.ssh_fingerprint}"]
   tags = ["${digitalocean_tag.target_env.name}","${digitalocean_tag.consul_server_role.name}"]
 }
+
 resource "ansible_host" "consul_server_01_droplet" {
     inventory_hostname = "${digitalocean_droplet.consul_server_01_droplet.name}"
     groups = ["${var.target_env}","${var.consul_server_role}","${var.primary_datacenter_role}"]
@@ -47,6 +36,7 @@ resource "digitalocean_droplet" "consul_server_02_droplet" {
   ssh_keys = ["${var.ssh_fingerprint}"]
   tags = ["${digitalocean_tag.target_env.name}","${digitalocean_tag.consul_server_role.name}"]
 }
+
 resource "ansible_host" "consul_server_02_droplet" {
     inventory_hostname = "${digitalocean_droplet.consul_server_02_droplet.name}"
     groups = ["${var.target_env}","${var.consul_server_role}","${var.fallback_datacenter_role}"]
@@ -57,6 +47,7 @@ resource "ansible_host" "consul_server_02_droplet" {
       datacenter_role = "${var.fallback_datacenter_role}"
     }
 }
+
 resource "digitalocean_droplet" "consul_server_03_droplet" {
   image = "${var.droplet_image}"
   name = "${var.consul_server_role}-03"
@@ -66,6 +57,7 @@ resource "digitalocean_droplet" "consul_server_03_droplet" {
   ssh_keys = ["${var.ssh_fingerprint}"]
   tags = ["${digitalocean_tag.target_env.name}","${digitalocean_tag.consul_server_role.name}"]
 }
+
 resource "ansible_host" "consul_server_03_droplet" {
     inventory_hostname = "${digitalocean_droplet.consul_server_03_droplet.name}"
     groups = ["${var.target_env}","${var.consul_server_role}","${var.ternary_datacenter_role}"]
