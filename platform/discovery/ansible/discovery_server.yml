@@ -1,0 +1,17 @@
+# Usage: export ANSIBLE_TF_DIR=../terraform/digitalocean && ansible-playbook --vault-id ~/.ansible_vault_pass.txt -i /etc/ansible/terraform.py sos.yml -e "target_env=staging rev=`git log -1 --pretty='%h'` security_mode=secure"
+
+# Locally register inventory hosts
+- hosts: 'localhost'
+  connection: 'local'
+  gather_facts: no
+  roles:
+  - { role: '../../shared/ansible/roles/register_inventory_hosts' }
+  - { role: 'download_consul' }
+
+- hosts: "&{{ target_env }}:&consul-server"
+  remote_user: "root"
+  become: 'yes'
+  roles:
+  - { role: 'deploy_consul' }
+  - { role: 'deploy_consul', node_role: 'server'}
+

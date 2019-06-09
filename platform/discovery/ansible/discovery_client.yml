@@ -1,0 +1,58 @@
+# Usage: export ANSIBLE_TF_DIR=../terraform/digitalocean && ansible-playbook --vault-id ~/.ansible_vault_pass.txt -i /etc/ansible/terraform.py sos.yml -e "target_env=staging rev=`git log -1 --pretty='%h'` security_mode=secure"
+
+# Locally register inventory hosts
+- hosts: 'localhost'
+  connection: 'local'
+  tasks:
+  - block:
+    - include_role: {name: 'register_inventory_hosts'}
+    rescue:
+    - fail:
+        msg: "Failed to register inventory hosts"
+
+# Locally download consul
+- hosts: 'localhost'
+  connection: 'local'
+  gather_facts: no
+  tasks:
+  - block:
+    - include_role: {name: 'download_consul'}
+    rescue:
+    - fail:
+        msg: "Failed to download consul to {{ consul_download_dir }}"
+
+# Deploy consul on all hosts (clients)
+- hosts: "&{{ target_env }}:consul-client"
+  remote_user: "root"
+  become: 'yes'
+  tasks:
+  - block:
+    - include_role: {name: 'deploy_consul'}
+    rescue:
+    - fail:
+        msg: "Failed to deploy consul to all nodes (client)"
+
+# Upgrade consul on all clients
+- hosts: "{{target_env}}:&consul-client"
+  remote_user: "root"
+  become: 'yes'
+  tasks:
+  - block:
+    - include_role: {name: 'oefenweb.dnsmasq'}
+    - name: "[systemd-resolved vs dnsmasq conflict]: update local name server"
+      lineinfile:
+        path: /etc/resolv.conf
+        regexp: '^nameserver 127.0.0.53'
+        line: 'nameserver 127.0.0.1'
+    - name: "[systemd-resolved vs dnsmasq conflict]: stop systemd-resolved.service"
+      service: name="systemd-resolved" state='stopped'
+    - name: "[systemd-resolved vs dnsmasq conflict]: disable systemd-resolved.service"
+      service: name="systemd-resolved" enabled='false'
+    - name: "[systemd-resolved vs dnsmasq conflict]: restart dnsmasq.service"
+      service: name="dnsmasq" state='restarted'
+    - include_role: {name: 'upgrade_node'}
+      vars: {node_role: 'client'}
+    rescue:
+    - fail:
+        msg: "Failed to upgrade consul client"
+
