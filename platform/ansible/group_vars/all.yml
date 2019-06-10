@@ -26,7 +26,7 @@ os_family: "\
   {% endif %}"
 
 consul_product: 'consul'
-consul_version: '1.2.3'
+consul_version: '1.5.1'
 consul_download_dir: '/tmp/{{ consul_product }}/downloads'
 
 consul_os_packages: ['unzip']

@@ -1,0 +1,27 @@
+---
+
+- name: adding RabbitMQ public GPG key to the apt repo
+  apt_key: url=https://github.com/rabbitmq/signing-keys/releases/download/2.0/rabbitmq-release-signing-key.asc state=present
+
+- name: adding RabbitMQ repo
+  apt_repository:
+    repo: "{{ item }}"
+    state: present
+    filename: bintray.rabbitmq
+  with_items:
+    - 'deb https://dl.bintray.com/rabbitmq-erlang/debian bionic erlang-22.x'
+    - 'deb https://dl.bintray.com/rabbitmq/debian bionic main'
+
+- name: installing RabbitMQ server
+  apt:
+    name: "{{ packages }}"
+    state: 'present'
+    update_cache: yes
+  vars:
+    packages:
+    - apt-transport-https
+    - rabbitmq-server
+
+- name: wait for port 5672 to be available
+  wait_for: host="{{ hostvars[inventory_hostname]['ansible_default_ipv4']['address'] }}" port="5672" delay='1' timeout="{{ service_startup_timeout }}"
+

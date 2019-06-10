@@ -1,0 +1,9 @@
+# usage
+# export ANSIBLE_TF_DIR=../terraform/ && ansible-playbook --vault-id ~/.ansible_vault_pass.txt -i /etc/ansible/terraform.py rabbitmq_server.yml -e "target_env=staging"
+
+- hosts: "&{{ target_env }}:&rabbitmq-server"
+  remote_user: "root"
+  become: 'yes'
+  roles:
+  - { role: 'rabbitmq/upgrade_rabbitmq'}
+
