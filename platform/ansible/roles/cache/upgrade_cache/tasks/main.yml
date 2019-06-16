@@ -54,7 +54,7 @@
 
 # start
 - name: enable and start {{ backend }}-server.service
-  service: name={{ backend }}-server.service" enabled='yes' state='restarted'
+  service: name={{ backend }}-server.service enabled='yes' state='restarted'
 
 # wait for ports to be available
 - name: wait for port {{ hazelcast_ports.gossip }} to be available
