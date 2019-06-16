@@ -1,0 +1,15 @@
+---
+
+- name: remove build dir {{ platform_build_dir }}
+  file: path={{ platform_build_dir }} state='absent'
+
+- name: create clone dir {{ platform_build_dir }}
+  file: path={{ platform_build_dir }} state='dir'
+
+- name: clone {{ platform_build_dir }}
+  git: repo={{ platform_repo }} dest={{ platform_build_dir }} version={{ rev }} accept_hostkey='true'
+
+- name: building platform located at {{ platform_build_dir }}
+  command: mvn clean install
+  args:
+    chdir: "{{ platform_build_dir }}/platform"
