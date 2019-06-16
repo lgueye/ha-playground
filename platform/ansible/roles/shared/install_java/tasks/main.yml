@@ -1,7 +1,7 @@
 ---
 
-- name: remove build dir {{ platform_build_dir }}
-  file: path={{ platform_build_dir }} state='absent'
+- name: install openjdk 8
+  apt: path={{ platform_build_dir }} state='absent'
 
 - name: create clone dir {{ platform_build_dir }}
   file: path={{ platform_build_dir }} state='directory'

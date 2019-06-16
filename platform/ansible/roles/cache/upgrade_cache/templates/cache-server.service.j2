@@ -8,7 +8,7 @@ Restart=on-failure
 RestartSec=10
 StartLimitInterval=0
 
-ExecStart={{ platform_home_dir }}/{{ backend }}-server.jar --spring.config.location={{ platform_home_dir }}/{{ backend }}-server.properties --spring.hazelcast.config={{ platform_home_dir }}/{{ backend }}-server.xml
+ExecStart={{ platform_home_dir }}/{{ backend }}-server.jar --spring.config.location={{ platform_home_dir }}/{{ backend }}-server.properties --spring.hazelcast.config=file://{{ platform_home_dir }}/{{ backend }}-server.xml
 
 [Install]
 WantedBy=multi-user.target
