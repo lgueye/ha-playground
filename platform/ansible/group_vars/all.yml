@@ -52,3 +52,18 @@ cockroachdb_version: '19.1.1'
 cockroachdb_pkg: "{{ cockroachdb_product }}-v{{ cockroachdb_version}}.{{ os_family }}-{{ os_architecture }}"
 cockroachdb_tgz_url: "https://binaries.cockroachdb.com/{{ cockroachdb_pkg }}.tgz"
 cockroachdb_download_dir: "/tmp/{{ cockroachdb_product }}/downloads"
+
+# local platform build
+platform_build_dir: '/tmp/platform_builds'
+platform_clone_dir: '{{ platform_build_dir }}/{{ rev }}'
+platform_repo: 'git@github.com:lgueye/ha-playground.git'
+
+platform_deploy_home_dir: '/var/platform/deployments/{{ rev }}'
+platform_home_dir: '/var/platform/current'
+
+platform_log_root_dir: '/var/log/platform'
+app_logging_level: 'INFO'
+root_logging_level: 'WARN'
+
+backends:
+  - cache: {impl: 'hazelcast'}

@@ -1,0 +1,7 @@
+---
+
+- name: 'create deploy dir {{ platform_deploy_home_dir }}'
+  file: state='directory' path="{{ platform_deploy_home_dir }}"
+
+- name: 'copy {{ platform_clone_dir }}/platform/{{ backend }}/{{ backend }}-server/target/*.jar to {{ platform_deploy_home_dir }}'
+  copy: src="{{ platform_clone_dir }}/platform/{{ backend }}/{{ backend }}-server/target/*.jar" dest="{{ platform_deploy_home_dir }}/platform-{{ backend }}-server.jar" mode='u=xrw,g=xr,o=r'
