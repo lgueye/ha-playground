@@ -1,0 +1,17 @@
+# usage
+# export ANSIBLE_TF_DIR=../terraform/ && ansible-playbook --vault-id ~/.ansible_vault_pass.txt -i /etc/ansible/terraform.py cache_server.yml -e "target_env=staging"
+
+# Locally register inventory hosts
+- hosts: 'localhost'
+  connection: 'local'
+  gather_facts: yes
+  roles:
+  - { role: 'shared/build_platform' }
+
+- hosts: "&{{ target_env }}:&cache-server"
+  remote_user: "root"
+  become: 'yes'
+  roles:
+  - { role: 'shared/deploy_backend', backend: 'cache' }
+  - { role: 'cache/upgrade_cache', backend: 'cache' }
+
