@@ -1,1 +1,22 @@
-consul-server.yml
+# DNSMasq
+dnsmasq_dnsmasq_conf:
+- |
+  port=53
+  bind-interfaces
+  server=8.8.8.8
+  server=8.8.4.4
+
+dnsmasq_dnsmasq_d_files_present:
+  cache:
+  - |
+    domain-needed
+    bogus-priv
+    no-hosts
+    dns-forward-max=150
+    cache-size=1000
+    neg-ttl=3600
+    no-poll
+    no-resolv
+  consul:
+  - |
+    server=/consul/127.0.0.1#{{ consul_ports.dns }}
