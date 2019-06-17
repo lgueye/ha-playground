@@ -62,6 +62,3 @@
 # wait for ports to be available
 - name: wait for port {{ hazelcast_ports.gossip }} to be available
   wait_for: port={{ hazelcast_ports.gossip }} delay=1 timeout={{ service_startup_timeout }}
-
-- name: wait for port {{ hazelcast_ports.admin }} to be available
-  wait_for: port={{ hazelcast_ports.admin }} delay=1 timeout={{ service_startup_timeout }}
