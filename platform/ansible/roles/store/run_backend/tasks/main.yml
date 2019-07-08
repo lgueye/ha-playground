@@ -1,0 +1,9 @@
+---
+
+- name: interpolate {{ backend_name }} properties config
+  template: src={{ backend_name }}-{{ backend_role }}.properties.j2 dest={{ platform_home_dir }}/{{ backend_name }}-{{ backend_role }}.properties
+
+- name: running store example
+  command: java -jar {{ platform_home_dir }}/{{ backend_name }}-{{ backend_role }}.jar --spring.config.location={{ platform_home_dir }}/{{ backend_name }}-{{ backend_role }}.properties
+  args:
+    chdir: "{{ platform_home_dir }}"
