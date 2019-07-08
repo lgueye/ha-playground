@@ -1,11 +1,17 @@
 # usage
 # export ANSIBLE_TF_DIR=../terraform/ && ansible-playbook --vault-id ~/.ansible_vault_pass.txt -i /etc/ansible/terraform.py cockroachdb_client.yml -e "target_env=staging"
 
+- hosts: 'localhost'
+  connection: 'local'
+  gather_facts: yes
+  roles:
+  - { role: 'shared/build_platform' }
+
 - hosts: "&{{ target_env }}:&cockroachdb-client"
   remote_user: "root"
   become: 'yes'
   roles:
   - { role: 'geerlingguy.java', when: "ansible_os_family == 'Debian'", java_packages: ['openjdk-8-jdk']}
   - { role: 'cockroachdb/deploy_cockroachdb_certs', node_role: 'client', cockroach_user: 'careassist'}
-  - { role: 'shared/deploy_backend', backend_name: 'store', backend_role: 'client'}
-  - { role: 'store/run_backend', backend_name: 'store', backend_role: 'client'}
+  - { role: 'shared/deploy_backend', backend_name: 'store', backend_role: 'example'}
+  - { role: 'store/run_backend', backend_name: 'store', backend_role: 'example'}
