@@ -3,5 +3,5 @@
 - name: 'create deploy dir {{ platform_deploy_home_dir }}'
   file: state='directory' path="{{ platform_deploy_home_dir }}"
 
-- name: 'copy {{ platform_clone_dir }}/platform/{{ backend }}/{{ backend }}-server/target/*.jar to {{ platform_deploy_home_dir }}'
-  copy: src="{{ platform_clone_dir }}/platform/{{ backend }}/{{ backend }}-server/target/platform-cache-server-1.0.0.jar" dest="{{ platform_deploy_home_dir }}/{{ backend }}-server.jar" mode='u=xrw,g=xr,o=r'
+- name: 'copy {{ platform_clone_dir }}/platform/{{ backend_name }}/{{ backend_name }}-{{ backend_role }}/target/*.jar to {{ platform_deploy_home_dir }}'
+  copy: src="{{ platform_clone_dir }}/platform/{{ backend_name }}/{{ backend_name }}-{{ backend_role }}/target/platform-{{ backend_name }}-{{ backend_role }}-1.0.0.jar" dest="{{ platform_deploy_home_dir }}/{{ backend_name }}-{{ backend_role }}.jar" mode='u=xrw,g=xr,o=r'
