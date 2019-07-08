@@ -78,6 +78,8 @@ consul_encryption_key: !vault |
   3761353035316633640a656535366566633566373233323135393439366237343233653661623363
   36363163313866636163663865663638363661373639643533313435613466636134
 
+cockroachdb_home: "/var/lib/{{ cockroachdb_product }}"
+cockroachdb_remote_install_dir: "{{ cockroachdb_home }}/{{ cockroachdb_version }}"
 cockroachdb_local_certs_dir: "{{ cockroachdb_download_dir }}/certs"
 cockroach_users: ["root", "{{ servicename }}"]
 

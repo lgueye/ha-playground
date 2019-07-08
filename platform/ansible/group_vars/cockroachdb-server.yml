@@ -1,10 +1,7 @@
-cockroachdb_home: "/var/lib/{{ cockroachdb_product }}"
 cockroachdb_data_dir: "/var/{{ cockroachdb_product }}"
 cockroachdb_log_dir: "/var/log/{{ cockroachdb_product }}"
 cockroachdb_pid_dir: "/run/{{ cockroachdb_product }}"
 cockroachdb_pid_file: "{{ cockroachdb_pid_dir }}/{{ cockroachdb_product }}.pid"
-
-cockroachdb_remote_install_dir: "{{ cockroachdb_home }}/{{ cockroachdb_version }}"
 
 cockroachdb_ports:
   http: "{{ cockroachdb_ports_http | default('8080', true) }}"
