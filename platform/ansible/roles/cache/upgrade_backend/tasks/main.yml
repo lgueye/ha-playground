@@ -1,0 +1,64 @@
+- name: create current revision dir {{ platform_home_dir }}
+  file: state='directory' path="{{ platform_home_dir }}"
+
+# unlink, re-link jar
+- name: unlink {{ platform_home_dir }}/{{ backend }}-{{ backend_role }}.jar older revision
+  file: state='absent' dest={{ platform_home_dir }}/{{ backend }}-{{ backend_role }}.jar
+  ignore_errors: 'yes'
+
+- name: link {{ backend }}-{{ backend_role }}.jar to new revision
+  file: state='link' src={{ platform_deploy_home_dir }}/{{ backend }}-{{ backend_role }}.jar dest={{ platform_home_dir }}/{{ backend }}-{{ backend_role }}.jar
+
+# unlink, update, re-link logback.xml
+- name: unlink {{ platform_home_dir }}/{{ backend }}-logback.xml
+  file: state='absent' dest={{ platform_home_dir }}/{{ backend }}-logback.xml
+  ignore_errors: 'yes'
+
+- name: interpolate {{ backend }} logback config
+  template: src=logback.xml.j2 dest={{ platform_deploy_home_dir }}/{{ backend }}-logback.xml
+
+- name: link {{ backend }}-logback.xml
+  file: state='link' src={{ platform_deploy_home_dir }}/{{ backend }}-logback.xml dest={{ platform_home_dir }}/{{ backend }}-logback.xml
+
+# unlink, update, re-link {{ backend_role }}.properties
+- name: unlink {{ platform_home_dir }}/{{ backend }}-{{ backend_role }}.properties
+  file: state='absent' dest={{ platform_home_dir }}/{{ backend }}-{{ backend_role }}.properties
+  ignore_errors: 'yes'
+
+- name: interpolate {{ backend }} properties config
+  template: src={{ backend }}-{{ backend_role }}.properties.j2 dest={{ platform_deploy_home_dir }}/{{ backend }}-{{ backend_role }}.properties
+
+- name: link {{ backend }}-{{ backend_role }}.properties
+  file: state='link' src={{ platform_deploy_home_dir }}/{{ backend }}-{{ backend_role }}.properties dest={{ platform_home_dir }}/{{ backend }}-{{ backend_role }}.properties
+
+# unlink, update, re-link {{ backend_role }}.xml
+- name: unlink {{ platform_home_dir }}/{{ backend }}-{{ backend_role }}.xml
+  file: state='absent' dest={{ platform_home_dir }}/{{ backend }}-{{ backend_role }}.xml
+  ignore_errors: 'yes'
+
+- name: interpolate {{ backend }} properties config
+  template: src={{ backend }}-{{ backend_role }}.xml.j2 dest={{ platform_deploy_home_dir }}/{{ backend }}-{{ backend_role }}.xml
+
+- name: link {{ backend }}-{{ backend_role }}.xml
+  file: state='link' src={{ platform_deploy_home_dir }}/{{ backend }}-{{ backend_role }}.xml dest={{ platform_home_dir }}/{{ backend }}-{{ backend_role }}.xml
+
+# update {{ backend_role }}.service
+- name: extrapolate {{ backend }}.service
+  template: src={{ backend }}-{{ backend_role }}.service.j2 dest=/etc/systemd/system/{{ backend }}-{{ backend_role }}.service
+
+# reload systemd
+- name: "reload systemd"
+  command: systemctl daemon-reload
+
+# stop
+- name: stop {{ backend }} systemd service
+  service: name="{{ backend }}-{{ backend_role }}" state='stopped'
+  ignore_errors: 'yes'
+
+# start
+- name: enable and start {{ backend }}-{{ backend_role }}.service
+  service: name={{ backend }}-{{ backend_role }}.service enabled='yes' state='restarted'
+
+# wait for ports to be available
+- name: wait for port {{ hazelcast_ports.gossip }} to be available
+  wait_for: port={{ hazelcast_ports.gossip }} delay=1 timeout={{ service_startup_timeout }}
