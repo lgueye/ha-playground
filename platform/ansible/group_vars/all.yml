@@ -92,6 +92,10 @@ cockroachdb_pkg: "{{ cockroachdb_product }}-v{{ cockroachdb_version}}.{{ os_fam
 cockroachdb_tgz_url: "https://binaries.cockroachdb.com/{{ cockroachdb_pkg }}.tgz"
 cockroachdb_download_dir: "/tmp/{{ cockroachdb_product }}/downloads"
 
+cockroachdb_ports:
+  http: "{{ cockroachdb_ports_http | default('8080', true) }}"
+  server: "{{ cockroachdb_ports_server | default('26257', true) }}"
+
 # local platform build
 platform_build_dir: '/tmp/platform_builds'
 platform_clone_dir: '{{ platform_build_dir }}/{{ rev }}'
