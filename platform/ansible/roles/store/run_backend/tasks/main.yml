@@ -23,4 +23,4 @@
 
 # run
 - name: running store example
-  command: {{ platform_home_dir }}/{{ backend_name }}-{{ backend_role }}.jar --spring.config.location={{ platform_home_dir }}/{{ backend_name }}-{{ backend_role }}.properties
+  command: "{{ platform_home_dir }}/{{ backend_name }}-{{ backend_role }}.jar --spring.config.location={{ platform_home_dir }}/{{ backend_name }}-{{ backend_role }}.properties"
