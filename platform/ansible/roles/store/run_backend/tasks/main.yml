@@ -1,9 +1,18 @@
 ---
+- name: create current revision dir {{ platform_home_dir }}
+  file: state='directory' path="{{ platform_home_dir }}"
 
-- name: interpolate {{ backend_name }} properties config
-  template: src={{ backend_name }}-{{ backend_role }}.properties.j2 dest={{ platform_home_dir }}/{{ backend_name }}-{{ backend_role }}.properties
+# unlink, update, re-link {{ backend_role }}.properties
+- name: unlink {{ platform_home_dir }}/{{ backend }}-{{ backend_role }}.properties
+  file: state='absent' dest={{ platform_home_dir }}/{{ backend }}-{{ backend_role }}.properties
+  ignore_errors: 'yes'
 
+- name: interpolate {{ backend }} properties config
+  template: src={{ backend }}-{{ backend_role }}.properties.j2 dest={{ platform_deploy_home_dir }}/{{ backend }}-{{ backend_role }}.properties
+
+- name: link {{ backend }}-{{ backend_role }}.properties
+  file: state='link' src={{ platform_deploy_home_dir }}/{{ backend }}-{{ backend_role }}.properties dest={{ platform_home_dir }}/{{ backend }}-{{ backend_role }}.properties
+
+# run
 - name: running store example
   command: java -jar {{ platform_home_dir }}/{{ backend_name }}-{{ backend_role }}.jar --spring.config.location={{ platform_home_dir }}/{{ backend_name }}-{{ backend_role }}.properties
-  args:
-    chdir: "{{ platform_home_dir }}"
