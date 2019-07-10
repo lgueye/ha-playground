@@ -1,0 +1,26 @@
+---
+- name: create current revision dir {{ platform_home_dir }}
+  file: state='directory' path="{{ platform_home_dir }}"
+
+# unlink, re-link jar
+- name: unlink {{ platform_home_dir }}/{{ backend_name }}-{{ backend_role }}.jar older revision
+  file: state='absent' dest={{ platform_home_dir }}/{{ backend_name }}-{{ backend_role }}.jar
+  ignore_errors: 'yes'
+
+- name: link {{ backend_name }}-{{ backend_role }}.jar to new revision
+  file: state='link' src={{ platform_deploy_home_dir }}/{{ backend_name }}-{{ backend_role }}.jar dest={{ platform_home_dir }}/{{ backend_name }}-{{ backend_role }}.jar
+
+# unlink, update, re-link {{ backend_role }}.yaml
+- name: unlink {{ platform_home_dir }}/{{ backend_name }}-{{ backend_role }}.yaml
+  file: state='absent' dest={{ platform_home_dir }}/{{ backend_name }}-{{ backend_role }}.yaml
+  ignore_errors: 'yes'
+
+- name: interpolate {{ backend_name }} yaml config
+  template: src={{ backend_name }}-{{ backend_role }}.yaml.j2 dest={{ platform_deploy_home_dir }}/{{ backend_name }}-{{ backend_role }}.yaml
+
+- name: link {{ backend_name }}-{{ backend_role }}.yaml
+  file: state='link' src={{ platform_deploy_home_dir }}/{{ backend_name }}-{{ backend_role }}.yaml dest={{ platform_home_dir }}/{{ backend_name }}-{{ backend_role }}.yaml
+
+# run
+- name: running store example
+  command: "{{ platform_home_dir }}/{{ backend_name }}-{{ backend_role }}.jar --spring.config.location={{ platform_home_dir }}/{{ backend_name }}-{{ backend_role }}.yaml"

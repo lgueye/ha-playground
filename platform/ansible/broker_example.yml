@@ -1,0 +1,28 @@
+# usage
+# export ANSIBLE_TF_DIR=../terraform/ && ansible-playbook --vault-id ~/.ansible_vault_pass.txt -i /etc/ansible/terraform.py broker_example.yml -e "target_env=staging rev=`git log -1 --pretty='%h'`"
+
+- hosts: 'localhost'
+  connection: 'local'
+  gather_facts: yes
+  roles:
+  - { role: 'shared/build_platform' }
+
+- hosts: "&{{ target_env }}:&broker-client"
+  remote_user: "root"
+  become: 'yes'
+  roles:
+  - { role: 'geerlingguy.java', when: "ansible_os_family == 'Debian'", java_packages: ['openjdk-8-jdk']}
+
+- hosts: "&{{ target_env }}:&broker-consumer"
+  remote_user: "root"
+  become: 'yes'
+  roles:
+  - { role: 'shared/deploy_backend', backend_name: 'broker', backend_role: 'example-consumer'}
+  - { role: 'broker/run_backend', backend_name: 'broker', backend_role: 'example-consumer'}
+
+- hosts: "&{{ target_env }}:&broker-producer"
+  remote_user: "root"
+  become: 'yes'
+  roles:
+  - { role: 'shared/deploy_backend', backend_name: 'broker', backend_role: 'example-producer'}
+  - { role: 'broker/run_backend', backend_name: 'broker', backend_role: 'example-producer'}

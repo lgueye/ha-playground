@@ -1,0 +1,27 @@
+logging
+  level: INFO
+
+spring
+  main
+    web-application-type: NONE
+
+spring:
+  rabbitmq:
+    host: rabbitmq.service.consul
+    port: {{ rabbitmq.port }}
+    username: {{ rabbitmq.user }}
+    password: {{ rabbitmq.password }}
+
+queues:
+  -
+    id: careassist_queues
+    routes:
+      -
+        id: care_events
+        key: care.events
+      -
+        id: maintenance_events
+        key: maintenance.events
+topics:
+  -
+    id: careassist_schedules_topics
