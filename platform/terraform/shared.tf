@@ -46,10 +46,10 @@ variable "ansible_python_interpreter" {
   default = "/usr/bin/python3"
 }
 
-# consul shared vars
-variable "consul_client_role" {
-  default = "consul-client"
+# discovery shared vars
+variable "discovery_client_role" {
+  default = "discovery-client"
 }
-resource "digitalocean_tag" "consul_client_role" {
-  name = "${var.consul_client_role}"
+resource "digitalocean_tag" "discovery_client_role" {
+  name = "${var.discovery_client_role}"
 }

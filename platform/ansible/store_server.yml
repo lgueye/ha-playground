@@ -1,0 +1,27 @@
+# usage
+# export ANSIBLE_TF_DIR=../terraform/ && ansible-playbook --vault-id ~/.ansible_vault_pass.txt -i /etc/ansible/terraform.py store_server.yml -e "target_env=staging"
+
+# download cockroach
+# produce certs
+- hosts: 'localhost'
+  connection: 'local'
+  gather_facts: yes
+  roles:
+  - { role: 'store/download_cockroachdb' }
+  - { role: 'store/produce_cockroachdb_certs' }
+
+- hosts: "&{{ target_env }}:&store-server"
+  remote_user: "root"
+  become: 'yes'
+  roles:
+  - { role: 'store/deploy_cockroachdb' }
+  - { role: 'store/deploy_cockroachdb_certs', node_role: 'node'}
+  - { role: 'store/deploy_cockroachdb_certs', node_role: 'client', cockroach_user: 'root'}
+  - { role: 'store/upgrade_cockroachdb'}
+
+- hosts: "{{ target_env }}:&store-master"
+  remote_user: "root"
+  become: 'yes'
+  roles:
+  - { role: 'store/initialize_cockroach_cluster' }
+  - { role: 'store/db_privileges' }

@@ -1,14 +1,14 @@
 # usage
-# export ANSIBLE_TF_DIR=../terraform/ && ansible-playbook --vault-id ~/.ansible_vault_pass.txt -i /etc/ansible/terraform.py consul_client.yml -e "target_env=staging"
+# export ANSIBLE_TF_DIR=../terraform/ && ansible-playbook --vault-id ~/.ansible_vault_pass.txt -i /etc/ansible/terraform.py discovery_client.yml -e "target_env=staging"
 
-- hosts: "&{{ target_env }}:&consul-client"
+- hosts: "&{{ target_env }}:&discovery-client"
   remote_user: "root"
   become: 'yes'
   roles:
-  - { role: 'consul/deploy_consul' }
+  - { role: 'discovery/deploy_consul' }
 
 # Upgrade consul on all clients
-- hosts: "{{target_env}}:&consul-client"
+- hosts: "{{target_env}}:&discovery-client"
   remote_user: "root"
   become: 'yes'
   tasks:
@@ -29,8 +29,8 @@
     - fail:
         msg: "Failed to upgrade consul client"
 
-- hosts: "&{{ target_env }}:&consul-client"
+- hosts: "&{{ target_env }}:&discovery-client"
   remote_user: "root"
   become: 'yes'
   roles:
-  - { role: 'consul/upgrade_consul', node_role: 'client'}
+  - { role: 'discovery/upgrade_consul', node_role: 'client'}
