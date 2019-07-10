@@ -13,7 +13,7 @@
 
 - name: "Create {{ cockroachdb_product }} nodes certs local dir"
   file: state='directory' dest="{{ cockroachdb_local_certs_dir }}/{{ item }}"
-  with_items: "{{ groups['cockroachdb-server'] }}"
+  with_items: "{{ groups['store-server'] }}"
 
 - name: "Produce {{ cockroachdb_product }} ca certs to local dir {{ cockroachdb_local_certs_dir }}/ca"
   shell: "{{ cockroachdb_download_dir }}/{{ cockroachdb_pkg}}/{{ cockroachdb_product }} cert create-ca --certs-dir={{ cockroachdb_local_certs_dir }}/ca --ca-key={{ cockroachdb_local_certs_dir }}/ca/ca.key"
@@ -26,4 +26,4 @@
 
 - name: "Produce {{ cockroachdb_product }} nodes certs to local dir {{ cockroachdb_local_certs_dir }}/node"
   shell: "{{ cockroachdb_download_dir }}/{{ cockroachdb_pkg}}/{{ cockroachdb_product }} cert create-node {{ hostvars[item].ansible_host }} localhost 127.0.0.1 --certs-dir={{ cockroachdb_local_certs_dir }}/ca --ca-key={{ cockroachdb_local_certs_dir }}/ca/ca.key && mv {{ cockroachdb_local_certs_dir }}/ca/node* {{ cockroachdb_local_certs_dir }}/{{ item }}"
-  with_items: "{{ groups['cockroachdb-server'] }}"
+  with_items: "{{ groups['store-server'] }}"
