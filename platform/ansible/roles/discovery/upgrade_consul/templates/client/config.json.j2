@@ -7,6 +7,6 @@
   "enable_syslog": true,
   "ui": true,
   "enable_script_checks": true,
-  "retry_join": {% set _res = []%}{%for var in (groups['consul-server'] | intersect( groups[ vars['target_env'] ]) | difference( [hostvars[inventory_hostname]] )) %} {{ _res.append(hostvars[var].ansible_host) }} {% endfor %} {{ _res | to_json}}
+  "retry_join": {% set _res = []%}{%for var in (groups['discovery-server'] | intersect( groups[ vars['target_env'] ]) | difference( [hostvars[inventory_hostname]] )) %} {{ _res.append(hostvars[var].ansible_host) }} {% endfor %} {{ _res | to_json}}
 
 }
