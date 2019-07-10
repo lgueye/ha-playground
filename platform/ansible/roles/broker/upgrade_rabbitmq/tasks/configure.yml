@@ -16,8 +16,8 @@
   notify: restart rabbitmq-server
 
 - rabbitmq_user:
-    user: {{ rabbitmq.user }}
-    password: {{ rabbitmq.password }}
+    user: "{{ rabbitmq.user }}"
+    password: "{{ rabbitmq.password }}"
     permissions:
       - vhost: /
         configure_priv: .*
