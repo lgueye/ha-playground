@@ -13,8 +13,8 @@ import org.springframework.context.annotation.Import;
 @Import(PlatformBrokerClientConfiguration.class)
 public class PlatformBrokerExampleProducerConfiguration {
 
-    @Bean
-    public PlatformBrokerExampleProducerJob platformBrokerExampleProducerJob(final AmqpTemplate amqpTemplate) {
-        return new PlatformBrokerExampleProducerJob(amqpTemplate);
-    }
+	@Bean
+	public PlatformBrokerExampleProducerJob platformBrokerExampleProducerJob(final AmqpTemplate amqpTemplate) {
+		return new PlatformBrokerExampleProducerJob(amqpTemplate);
+	}
 }
