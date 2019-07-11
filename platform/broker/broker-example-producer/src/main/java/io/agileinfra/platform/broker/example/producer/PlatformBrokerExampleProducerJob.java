@@ -26,6 +26,8 @@ public class PlatformBrokerExampleProducerJob implements CommandLineRunner {
 	public void run(String... args) {
 		final Instant now = Instant.now();
 		final Instant anHourAgo = now.minus(Duration.ofHours(1));
+		final String directExchangeName = "careassist_queues";
+		final String fanoutExchangeName = "careassist_schedules_topics";
 		IntStream.range(0, 60).boxed().forEach(i -> {
 			final SensorEventDto event = SensorEventDto.builder() //
 					.id(UUID.randomUUID().toString()) //
@@ -33,7 +35,9 @@ public class PlatformBrokerExampleProducerJob implements CommandLineRunner {
 					.timestamp(anHourAgo.plus(Duration.ofMinutes(i))) //
 					.state(SensorState.on) //
 					.build();
-			template.convertAndSend("careassist_queues", "care.events", event);
+			final String routingKey = "care.events";
+			template.convertAndSend(directExchangeName, routingKey, event);
+			log.info(">>>>>>>>>>> Sent {} to exchange {} with routing key {}", event.getId(), directExchangeName, routingKey);
 		});
 		IntStream.range(0, 60).boxed().forEach(i -> {
 			final SensorEventDto event = SensorEventDto.builder() //
@@ -42,7 +46,9 @@ public class PlatformBrokerExampleProducerJob implements CommandLineRunner {
 					.timestamp(anHourAgo.plus(Duration.ofMinutes(i))) //
 					.state(SensorState.off) //
 					.build();
-			template.convertAndSend("careassist_queues", "maintenance.events", event);
+			final String routingKey = "maintenance.events";
+			template.convertAndSend(directExchangeName, routingKey, event);
+			log.info(">>>>>>>>>>> Sent {} to exchange {} with routing key {}", event.getId(), directExchangeName, routingKey);
 		});
 		IntStream.range(0, 60).boxed().forEach(i -> {
 			final SensorEventDto event = SensorEventDto.builder() //
@@ -52,11 +58,13 @@ public class PlatformBrokerExampleProducerJob implements CommandLineRunner {
 					.state(SensorState.off) //
 					.build();
 			final ScheduleDto schedule = ScheduleDto.builder().id(UUID.randomUUID().toString()) //
-					.destination("care.events") //
+					.destination("any.routing.queue") //
 					.message(event) //
 					.timestamp(anHourAgo.plus(Duration.ofMinutes(i))) //
 					.build();
-			template.convertAndSend("careassist_schedules_topics", "ignored_anyway", schedule);
+			final String routingKey = "#";
+			template.convertAndSend(fanoutExchangeName, routingKey, schedule);
+			log.info(">>>>>>>>>>> Sent {} to exchange {} with routing key {}", event.getId(), fanoutExchangeName, routingKey);
 		});
 	}
 }
