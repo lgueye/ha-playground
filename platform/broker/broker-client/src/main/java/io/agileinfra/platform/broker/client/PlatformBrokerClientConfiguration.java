@@ -18,6 +18,7 @@ import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
 import org.springframework.amqp.support.converter.MessageConverter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 import org.springframework.core.env.Environment;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 
@@ -34,6 +35,7 @@ import java.util.List;
 @Configuration
 @Slf4j
 @RequiredArgsConstructor
+@Import({TopicsConfig.class, QueuesConfig.class})
 public class PlatformBrokerClientConfiguration {
 
 	private final Environment environment;
@@ -51,8 +53,7 @@ public class PlatformBrokerClientConfiguration {
 	}
 
 	@Bean
-	public List<Declarable> directBindings() {
-		QueuesConfig queuesConfig = environment.getProperty("queues", QueuesConfig.class);
+	public List<Declarable> directBindings(final QueuesConfig queuesConfig) {
 		log.info("Creating Destinations...");
 		final List<Declarable> declarables = Lists.newArrayList();
 		queuesConfig.getExchanges().forEach(exchange -> {
@@ -71,8 +72,7 @@ public class PlatformBrokerClientConfiguration {
 	}
 
 	@Bean
-	public List<Declarable> fanoutBindings() {
-		TopicsConfig topicsConfig = environment.getProperty("topics", TopicsConfig.class);
+	public List<Declarable> fanoutBindings(final TopicsConfig topicsConfig) {
 		log.info("Creating Destinations...");
 		final List<Declarable> declarables = Lists.newArrayList();
 		topicsConfig.getExchanges().forEach(exchange -> {
