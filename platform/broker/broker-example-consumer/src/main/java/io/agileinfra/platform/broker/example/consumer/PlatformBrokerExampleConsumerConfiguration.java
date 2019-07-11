@@ -11,7 +11,6 @@ import org.springframework.amqp.core.Exchange;
 import org.springframework.amqp.core.ExchangeBuilder;
 import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.core.QueueBuilder;
-import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
@@ -27,15 +26,9 @@ import java.util.Optional;
  * Created by <a href="mailto:louis.gueye@domo-safety.com">Louis Gueye</a>.
  */
 @Configuration
-@Import(PlatformBrokerClientConfiguration.class)
+@Import({PlatformBrokerClientConfiguration.class, TopicsConfig.class})
 @Slf4j
 public class PlatformBrokerExampleConsumerConfiguration {
-
-	@ConfigurationProperties("topics")
-	@Bean
-	public TopicsConfig topics() {
-		return new TopicsConfig();
-	}
 
 	@Bean
 	public Exchange fanoutExchange(final AmqpAdmin amqpAdmin, final TopicsConfig topics) {

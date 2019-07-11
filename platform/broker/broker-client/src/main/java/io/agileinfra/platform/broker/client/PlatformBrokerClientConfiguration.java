@@ -15,7 +15,6 @@ import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.core.QueueBuilder;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
 import org.springframework.amqp.support.converter.MessageConverter;
-import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
@@ -37,12 +36,6 @@ public class PlatformBrokerClientConfiguration {
 
 	private final QueuesConfig queues;
 	private final AmqpAdmin amqpAdmin;
-
-	@ConfigurationProperties("queues")
-	@Bean
-	public QueuesConfig queues() {
-		return new QueuesConfig();
-	}
 
 	@Bean
 	public MessageConverter messageConverter() {
