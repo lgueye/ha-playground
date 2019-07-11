@@ -3,15 +3,13 @@ logging:
     ROOT: INFO
 
 spring:
-  main:
-    web-application-type: NONE
-
-spring:
   rabbitmq:
     host: rabbitmq.service.consul
     port: {{ rabbitmq.port }}
     username: {{ rabbitmq.user }}
     password: {{ rabbitmq.password }}
+  main:
+    web-application-type: NONE
 
 queues:
   exchanges:
