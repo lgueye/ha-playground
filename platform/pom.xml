@@ -19,6 +19,7 @@
         <guava.version>27.0.1-jre</guava.version>
         <hazelcast-consul-discovery-spi.version>1.0-RC9</hazelcast-consul-discovery-spi.version>
         <hazelcast.version>3.11</hazelcast.version>
+        <jackson.version>2.9.9</jackson.version>
         <jacoco-maven-plugin.version>0.8.2</jacoco-maven-plugin.version>
         <java.version>${maven.compiler.source}</java.version>
         <javax.el-api.version>3.0.1-b06</javax.el-api.version>
@@ -45,7 +46,6 @@
         <spotbugs-maven-plugin.version>3.1.8</spotbugs-maven-plugin.version>
         <spring-boot.version>2.1.6.RELEASE</spring-boot.version>
         <spring.version>5.1.5.RELEASE</spring.version>
-        <jackson.version>2.9.9</jackson.version>
     </properties>
     <dependencyManagement>
         <dependencies>
@@ -181,6 +181,12 @@
             <artifactId>spring-context</artifactId>
         </dependency>
         <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot</artifactId>
+            <version>2.1.6.RELEASE</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <version>${lombok.version}</version>
@@ -190,12 +196,6 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot</artifactId>
-            <version>2.1.6.RELEASE</version>
-            <scope>compile</scope>
         </dependency>
     </dependencies>
     <repositories>
