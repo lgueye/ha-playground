@@ -13,6 +13,7 @@ import java.time.Instant;
 @Data
 @Builder(toBuilder = true)
 @NoArgsConstructor
+@AllArgsConstructor
 public class ScheduleDto {
 	private String id;
 	private String destination;
