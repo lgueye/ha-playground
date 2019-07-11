@@ -1,0 +1,14 @@
+[Unit]
+Description=Systemd service for {{backend}}-{{ backend_role }}
+After=syslog.target network-online.target
+Wants=network-online.target
+
+[Service]
+Restart=on-failure
+RestartSec=10
+StartLimitInterval=0
+
+ExecStart={{ platform_home_dir }}/{{ backend }}-{{ backend_role }}.jar --spring.config.location={{ platform_home_dir }}/{{ backend }}-{{ backend_role }}.yaml
+
+[Install]
+WantedBy=multi-user.target

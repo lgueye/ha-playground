@@ -18,7 +18,7 @@
   become: 'yes'
   roles:
   - { role: 'shared/deploy_backend', backend_name: 'broker', backend_role: 'example-consumer'}
-  - { role: 'broker/run_backend', backend_name: 'broker', backend_role: 'example-consumer'}
+  - { role: 'broker/upgrade_backend', backend_name: 'broker', backend_role: 'example-consumer'}
 
 - hosts: "&{{ target_env }}:&broker-producer"
   remote_user: "root"
