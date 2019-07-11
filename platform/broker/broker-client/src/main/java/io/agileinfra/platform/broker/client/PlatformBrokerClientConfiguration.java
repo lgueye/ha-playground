@@ -38,8 +38,6 @@ import java.util.List;
 @Import({TopicsConfig.class, QueuesConfig.class})
 public class PlatformBrokerClientConfiguration {
 
-	private final AmqpAdmin amqpAdmin;
-
 	@Bean
 	public MessageConverter messageConverter() {
 		return new Jackson2JsonMessageConverter(Jackson2ObjectMapperBuilder.json() //
@@ -59,14 +57,14 @@ public class PlatformBrokerClientConfiguration {
 		queuesConfig.getExchanges().forEach(exchange -> {
 			Exchange ex = ExchangeBuilder.directExchange(exchange.getId()).durable(true).build();
 			amqpAdmin.declareExchange(ex);
-//			declarables.add(ex);
+			declarables.add(ex);
 			exchange.getRoutes().forEach(queue -> {
 				Queue q = QueueBuilder.durable(queue.getId()).build();
 				log.info("Successfully created queue {}.", queue.getId());
                 amqpAdmin.declareQueue(q);
-//				declarables.add(q);
+				declarables.add(q);
 				Binding b = BindingBuilder.bind(q).to(ex).with(queue.getKey()).noargs();
-//				declarables.add(b);
+				declarables.add(b);
                 amqpAdmin.declareBinding(b);
 				log.info("Successfully bound exchange {} to queue {} with routing key {}.", exchange.getId(), queue.getId(), queue.getKey());
 			});
@@ -80,16 +78,16 @@ public class PlatformBrokerClientConfiguration {
 		final List<Declarable> declarables = Lists.newArrayList();
 		topicsConfig.getExchanges().forEach(exchange -> {
 			Exchange ex = ExchangeBuilder.fanoutExchange(exchange.getId()).durable(true).build();
-//			declarables.add(ex);
+			declarables.add(ex);
             amqpAdmin.declareExchange(ex);
 			exchange.getRoutes().forEach(queue -> {
 				Queue q = QueueBuilder.nonDurable(queue.getId()).autoDelete().exclusive().build();
 				log.info("Successfully created queue {}.", q.getName());
-//				declarables.add(q);
+				declarables.add(q);
                 amqpAdmin.declareQueue(q);
 				Binding b = BindingBuilder.bind(q).to(ex).with(queue.getKey()).noargs();
                 amqpAdmin.declareBinding(b);
-//				declarables.add(b);
+				declarables.add(b);
 				log.info("Successfully bound exchange {} to queue {} with routing key {}.", ex.getName(), q.getName(), b.getRoutingKey());
 			});
 		});
