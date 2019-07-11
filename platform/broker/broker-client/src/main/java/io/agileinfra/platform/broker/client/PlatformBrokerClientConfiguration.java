@@ -4,11 +4,12 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.google.common.collect.Lists;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.amqp.core.AmqpAdmin;
 import org.springframework.amqp.core.Binding;
 import org.springframework.amqp.core.BindingBuilder;
+import org.springframework.amqp.core.Declarable;
 import org.springframework.amqp.core.Exchange;
 import org.springframework.amqp.core.ExchangeBuilder;
 import org.springframework.amqp.core.Queue;
@@ -17,9 +18,10 @@ import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
 import org.springframework.amqp.support.converter.MessageConverter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.env.Environment;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 
-import javax.annotation.PostConstruct;
+import java.util.List;
 
 /**
  * Queues configuration are shared by all consumers
@@ -34,8 +36,7 @@ import javax.annotation.PostConstruct;
 @RequiredArgsConstructor
 public class PlatformBrokerClientConfiguration {
 
-	private final QueuesConfig queues;
-	private final AmqpAdmin amqpAdmin;
+	private final Environment environment;
 
 	@Bean
 	public MessageConverter messageConverter() {
@@ -44,27 +45,49 @@ public class PlatformBrokerClientConfiguration {
 				.featuresToDisable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS) // use ISODate and not other cryptic formats
 				.featuresToDisable(SerializationFeature.FAIL_ON_EMPTY_BEANS) // allow empty json to be produced (introduced with care alarm models
 				// which can be as simple as `{}`
-				.featuresToDisable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES) // do not fail on unkown properties because they are likely to
+				.featuresToDisable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES) // do not fail on unknown properties because they are likely to
 				.modules(new JavaTimeModule()) //
 				.build());
 	}
 
-	@PostConstruct
-	public void configureRouting() {
+	@Bean
+	public List<Declarable> directBindings() {
+		QueuesConfig queuesConfig = environment.getProperty("queues", QueuesConfig.class);
 		log.info("Creating Destinations...");
-		queues.getExchanges().forEach(exchange -> {
+		final List<Declarable> declarables = Lists.newArrayList();
+		queuesConfig.getExchanges().forEach(exchange -> {
 			Exchange ex = ExchangeBuilder.directExchange(exchange.getId()).durable(true).build();
-			amqpAdmin.declareExchange(ex);
+			declarables.add(ex);
 			exchange.getRoutes().forEach(queue -> {
 				Queue q = QueueBuilder.durable(queue.getId()).build();
 				log.info("Successfully created queue {}.", queue.getId());
-				amqpAdmin.declareQueue(q);
+				declarables.add(q);
 				Binding b = BindingBuilder.bind(q).to(ex).with(queue.getKey()).noargs();
-				amqpAdmin.declareBinding(b);
+				declarables.add(b);
 				log.info("Successfully bound exchange {} to queue {} with routing key {}.", exchange.getId(), queue.getId(), queue.getKey());
 			});
 		});
+		return declarables;
+	}
 
+	@Bean
+	public List<Declarable> fanoutBindings() {
+		TopicsConfig topicsConfig = environment.getProperty("topics", TopicsConfig.class);
+		log.info("Creating Destinations...");
+		final List<Declarable> declarables = Lists.newArrayList();
+		topicsConfig.getExchanges().forEach(exchange -> {
+			Exchange ex = ExchangeBuilder.fanoutExchange(exchange.getId()).durable(true).build();
+			declarables.add(ex);
+			exchange.getRoutes().forEach(queue -> {
+				Queue q = QueueBuilder.nonDurable(queue.getId()).autoDelete().exclusive().build();
+				log.info("Successfully created queue {}.", q.getName());
+				declarables.add(q);
+				Binding b = BindingBuilder.bind(q).to(ex).with(queue.getKey()).noargs();
+				declarables.add(b);
+				log.info("Successfully bound exchange {} to queue {} with routing key {}.", ex.getName(), q.getName(), b.getRoutingKey());
+			});
+		});
+		return declarables;
 	}
 
 }

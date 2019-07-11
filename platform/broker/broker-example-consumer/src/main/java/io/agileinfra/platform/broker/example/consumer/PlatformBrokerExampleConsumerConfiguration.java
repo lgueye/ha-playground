@@ -1,21 +1,10 @@
 package io.agileinfra.platform.broker.example.consumer;
 
-import io.agileinfra.platform.broker.client.ExchangeDto;
 import io.agileinfra.platform.broker.client.PlatformBrokerClientConfiguration;
 import io.agileinfra.platform.broker.client.TopicsConfig;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.amqp.core.AmqpAdmin;
-import org.springframework.amqp.core.Binding;
-import org.springframework.amqp.core.BindingBuilder;
-import org.springframework.amqp.core.Exchange;
-import org.springframework.amqp.core.ExchangeBuilder;
-import org.springframework.amqp.core.Queue;
-import org.springframework.amqp.core.QueueBuilder;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
-
-import java.util.Optional;
 
 /**
  * Topics must be configured in the consumer.
@@ -29,33 +18,4 @@ import java.util.Optional;
 @Import({PlatformBrokerClientConfiguration.class, TopicsConfig.class})
 @Slf4j
 public class PlatformBrokerExampleConsumerConfiguration {
-
-	@Bean
-	public Exchange fanoutExchange(final AmqpAdmin amqpAdmin, final TopicsConfig topics) {
-		final Optional<ExchangeDto> optional = topics.getExchanges().stream()
-				.filter(exchange -> "careassist_schedules_topics".equals(exchange.getId())).findFirst();
-		if (!optional.isPresent()) {
-			throw new IllegalStateException("Missing <careassist_schedules_topics> configuration");
-		}
-		final Exchange exchange = ExchangeBuilder.fanoutExchange(optional.get().getId()).durable(true).build();
-		amqpAdmin.declareExchange(exchange);
-		return exchange;
-	}
-
-	@Bean
-	public Queue schedulesQueue(final AmqpAdmin amqpAdmin) {
-		Queue q = QueueBuilder.nonDurable().build();
-		amqpAdmin.declareQueue(q);
-		log.info("Successfully created queue {}.", q.getName());
-		return q;
-	}
-
-	@Bean
-	public Binding schedulesBinding(final Exchange exchange, final Queue queue, final AmqpAdmin amqpAdmin) {
-		Binding b = BindingBuilder.bind(queue).to(exchange).with(queue.getName()).noargs();
-		amqpAdmin.declareBinding(b);
-		log.info("Successfully bound exchange {} to queue {} with routing key {}.", exchange.getName(), queue.getName(), b.getRoutingKey());
-		return b;
-	}
-
 }
