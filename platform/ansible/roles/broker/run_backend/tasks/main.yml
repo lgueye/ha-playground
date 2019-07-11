@@ -22,5 +22,5 @@
   file: state='link' src={{ platform_deploy_home_dir }}/{{ backend_name }}-{{ backend_role }}.yaml dest={{ platform_home_dir }}/{{ backend_name }}-{{ backend_role }}.yaml
 
 # run
-- name: running store example
+- name: running {{ backend_name }} example
   command: "{{ platform_home_dir }}/{{ backend_name }}-{{ backend_role }}.jar --spring.config.location={{ platform_home_dir }}/{{ backend_name }}-{{ backend_role }}.yaml"

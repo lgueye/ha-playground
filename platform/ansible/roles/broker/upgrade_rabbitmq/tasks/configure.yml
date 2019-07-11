@@ -13,19 +13,8 @@
 
 - name: 'enabling plugins (management, consul discovery)'
   rabbitmq_plugin: names=rabbitmq_management,rabbitmq_peer_discovery_consul state=enabled
-  notify: restart rabbitmq-server
 
-- rabbitmq_user:
-    user: "{{ rabbitmq.user }}"
-    password: "{{ rabbitmq.password }}"
-    permissions:
-      - vhost: /
-        configure_priv: .*
-        read_priv: .*
-        write_priv: .*
-    state: present
-
-- name: 'ensuring that the RabbitMQ service is running'
+- name: 'ensuring that the RabbitMQ service is restarted'
   service: name=rabbitmq-server state=restarted enabled=yes
 
 # configure ha mode
@@ -37,4 +26,18 @@
     tags:
       ha-mode: all
       ha-sync-mode: automatic
+
+# user
+- rabbitmq_user:
+    user: "{{ rabbitmq.user }}"
+    password: "{{ rabbitmq.password }}"
+    permissions:
+      - vhost: /
+        configure_priv: .*
+        read_priv: .*
+        write_priv: .*
+    state: present
+
+- name: 'ensuring that the RabbitMQ service is restarted'
+  service: name=rabbitmq-server state=restarted enabled=yes
 
