@@ -35,7 +35,7 @@
                       IF a ConsulRegistrator is configured below: this node will be registered under this same service
                         name. This name should be UNIQUE to your hazelcast cluster! (i.e. like your group name above..)
                         -->
-                        <property name="consul-service-name">{{ backend }}-service</property>
+                        <property name="consul-service-name">{{ backend_name }}</property>
 
                         <!--
                         When discovering peer nodes, only return those that are healthy (true)

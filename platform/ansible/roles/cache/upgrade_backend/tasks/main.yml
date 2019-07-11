@@ -36,7 +36,7 @@
   file: state='absent' dest={{ platform_home_dir }}/{{ backend_name }}-{{ backend_role }}.xml
   ignore_errors: 'yes'
 
-- name: interpolate {{ backend_name }} properties config
+- name: interpolate {{ backend_name }} hazelcast config
   template: src={{ backend_name }}-{{ backend_role }}.xml.j2 dest={{ platform_deploy_home_dir }}/{{ backend_name }}-{{ backend_role }}.xml
 
 - name: link {{ backend_name }}-{{ backend_role }}.xml
