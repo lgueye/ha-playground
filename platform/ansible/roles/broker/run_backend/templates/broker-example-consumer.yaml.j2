@@ -10,15 +10,16 @@ spring:
     password: {{ rabbitmq.password }}
 
 queues:
-  -
-    id: careassist_queues
-    routes:
-      -
-        id: care_events
-        key: care.events
-      -
-        id: maintenance_events
-        key: maintenance.events
+  exchanges:
+    - id: careassist_queues
+      routes:
+        - id: care_events
+          key: care.events
+        - id: maintenance_events
+          key: maintenance.events
 topics:
-  -
-    id: careassist_schedules_topics
+  exchanges:
+    - id: careassist_schedules_topics
+      routes:
+        - id: schedules
+          key: #

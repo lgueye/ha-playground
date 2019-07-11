@@ -3,15 +3,11 @@ logging:
     ROOT: INFO
 
 spring:
-  main:
-    web-application-type: NONE
-
-spring:
   rabbitmq:
-    host: rabbitmq.service.consul
-    port: {{ rabbitmq.port }}
-    username: {{ rabbitmq.user }}
-    password: {{ rabbitmq.password }}
+    host: 165.22.77.59
+    port: 5672
+    username: careassist
+    password: J58bgBSaqKZKKRbE0LHjBsnWDp90e2eZ
 
 queues:
   exchanges:
