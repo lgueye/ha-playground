@@ -86,7 +86,7 @@ public class PlatformBrokerClientConfiguration {
 			declarables.add(ex);
 			amqpAdmin.declareExchange(ex);
 			exchange.getRoutes().forEach(queue -> {
-				Queue q = QueueBuilder.nonDurable(queue.getId()).autoDelete().exclusive().build();
+				Queue q = QueueBuilder.nonDurable(queue.getId()).autoDelete().build();
 				log.info("Successfully created queue {}.", q.getName());
 				declarables.add(q);
 				amqpAdmin.declareQueue(q);
