@@ -4,23 +4,12 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.amqp.core.AmqpAdmin;
-import org.springframework.amqp.core.Binding;
-import org.springframework.amqp.core.BindingBuilder;
-import org.springframework.amqp.core.Declarable;
-import org.springframework.amqp.core.Exchange;
-import org.springframework.amqp.core.ExchangeBuilder;
-import org.springframework.amqp.core.Queue;
-import org.springframework.amqp.core.QueueBuilder;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
 import org.springframework.amqp.support.converter.MessageConverter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
-
-import java.util.List;
 
 /**
  * Queues configuration are shared by all consumers
@@ -44,59 +33,6 @@ public class PlatformBrokerClientConfiguration {
 				.featuresToDisable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES) // do not fail on unknown properties because they are likely to
 				.modules(new JavaTimeModule()) //
 				.build());
-	}
-
-	@Bean
-	public QueuesConfig queuesConfig() {
-		return new QueuesConfig();
-	}
-	@Bean
-	public TopicsConfig topicsConfig() {
-		return new TopicsConfig();
-	}
-
-	@Bean
-	public List<Declarable> directBindings(final AmqpAdmin amqpAdmin, final QueuesConfig queuesConfig) {
-		log.info("Creating Destinations...");
-		final List<Declarable> declarables = Lists.newArrayList();
-		queuesConfig.getExchanges().forEach(exchange -> {
-			Exchange ex = ExchangeBuilder.directExchange(exchange.getId()).durable(true).build();
-			amqpAdmin.declareExchange(ex);
-			declarables.add(ex);
-			exchange.getRoutes().forEach(queue -> {
-				Queue q = QueueBuilder.durable(queue.getId()).build();
-				log.info("Successfully created queue {}.", queue.getId());
-				amqpAdmin.declareQueue(q);
-				declarables.add(q);
-				Binding b = BindingBuilder.bind(q).to(ex).with(queue.getKey()).noargs();
-				declarables.add(b);
-				amqpAdmin.declareBinding(b);
-				log.info("Successfully bound exchange {} to queue {} with routing key {}.", exchange.getId(), queue.getId(), queue.getKey());
-			});
-		});
-		return declarables;
-	}
-
-	@Bean
-	public List<Declarable> fanoutBindings(final AmqpAdmin amqpAdmin, final TopicsConfig topicsConfig) {
-		log.info("Creating Destinations...");
-		final List<Declarable> declarables = Lists.newArrayList();
-		topicsConfig.getExchanges().forEach(exchange -> {
-			Exchange ex = ExchangeBuilder.fanoutExchange(exchange.getId()).durable(true).build();
-			declarables.add(ex);
-			amqpAdmin.declareExchange(ex);
-			exchange.getRoutes().forEach(queue -> {
-				Queue q = QueueBuilder.nonDurable(queue.getId()).autoDelete().build();
-				log.info("Successfully created queue {}.", q.getName());
-				declarables.add(q);
-				amqpAdmin.declareQueue(q);
-				Binding b = BindingBuilder.bind(q).to(ex).with(queue.getKey()).noargs();
-				amqpAdmin.declareBinding(b);
-				declarables.add(b);
-				log.info("Successfully bound exchange {} to queue {} with routing key {}.", ex.getName(), q.getName(), b.getRoutingKey());
-			});
-		});
-		return declarables;
 	}
 
 }
