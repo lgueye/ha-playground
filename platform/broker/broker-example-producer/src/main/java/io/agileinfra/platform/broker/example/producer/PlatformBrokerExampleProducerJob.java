@@ -28,10 +28,11 @@ public class PlatformBrokerExampleProducerJob implements CommandLineRunner {
 		final Instant anHourAgo = now.minus(Duration.ofHours(1));
 		final String directExchangeName = "careassist_queues";
 		final String fanoutExchangeName = "careassist_schedules_topics";
+		final String sensorBusinessId = "sens-q7ikjxk1ftik";
 		IntStream.range(0, 60).boxed().forEach(i -> {
 			final SensorEventDto event = SensorEventDto.builder() //
 					.id(UUID.randomUUID().toString()) //
-					.businessId("sens-q7ikjxk1ftik") //
+					.businessId(sensorBusinessId) //
 					.timestamp(anHourAgo.plus(Duration.ofMinutes(i))) //
 					.state(SensorState.on) //
 					.build();
@@ -42,7 +43,7 @@ public class PlatformBrokerExampleProducerJob implements CommandLineRunner {
 		IntStream.range(0, 60).boxed().forEach(i -> {
 			final SensorEventDto event = SensorEventDto.builder() //
 					.id(UUID.randomUUID().toString()) //
-					.businessId("sens-q7ikjxk1ftik") //
+					.businessId(sensorBusinessId) //
 					.timestamp(anHourAgo.plus(Duration.ofMinutes(i))) //
 					.state(SensorState.off) //
 					.build();
@@ -53,14 +54,14 @@ public class PlatformBrokerExampleProducerJob implements CommandLineRunner {
 		IntStream.range(0, 60).boxed().forEach(i -> {
 			final SensorEventDto event = SensorEventDto.builder() //
 					.id(UUID.randomUUID().toString()) //
-					.businessId("sens-q7ikjxk1ftik") //
+					.businessId(sensorBusinessId) //
 					.timestamp(anHourAgo.plus(Duration.ofMinutes(i))) //
 					.state(SensorState.off) //
 					.build();
 			final ScheduleDto schedule = ScheduleDto.builder().id(UUID.randomUUID().toString()) //
 					.destination("any.routing.queue") //
 					.message(event) //
-					.timestamp(anHourAgo.plus(Duration.ofMinutes(i))) //
+					.timestamp(now.plus(Duration.ofMinutes(i))) //
 					.build();
 			final String routingKey = "#";
 			template.convertAndSend(fanoutExchangeName, routingKey, schedule);
