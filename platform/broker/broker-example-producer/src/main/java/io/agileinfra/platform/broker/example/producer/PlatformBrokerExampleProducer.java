@@ -9,6 +9,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class PlatformBrokerExampleProducer {
 	public static void main(String[] args) {
-		SpringApplication.exit(SpringApplication.run(PlatformBrokerExampleProducer.class, args));
+		SpringApplication.run(PlatformBrokerExampleProducer.class, args).close();
 	}
 }
