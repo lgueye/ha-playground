@@ -362,7 +362,7 @@
                             <goal>format</goal>
                         </goals>
                         <configuration>
-                            <lineEnding>CRLF</lineEnding>
+                            <lineEnding>LF</lineEnding>
                             <configFile>${project.parent.basedir}/../java_code_format.xml</configFile>
                         </configuration>
                     </execution>
