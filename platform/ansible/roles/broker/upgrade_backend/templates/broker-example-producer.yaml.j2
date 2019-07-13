@@ -1,0 +1,9 @@
+logging:
+  config: {{ platform_home_dir }}/{{ backend_name }}-{{ backend_role }}-logback.xml
+
+spring:
+  rabbitmq:
+    host: rabbitmq.service.consul
+    port: {{ rabbitmq.port }}
+    username: {{ rabbitmq.user }}
+    password: {{ rabbitmq.password }}
