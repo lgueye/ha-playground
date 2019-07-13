@@ -9,6 +9,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class PlatformCacheExampleProducer {
 	public static void main(String[] args) {
-		SpringApplication.run(PlatformCacheExampleProducer.class, args).close();
+		SpringApplication.run(PlatformCacheExampleProducer.class, args);
 	}
 }
