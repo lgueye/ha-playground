@@ -1,0 +1,5 @@
+---
+
+# wait for ports to be available
+- name: check backend health => wait for port {{ target_port }} to be available
+  wait_for: port={{ target_port }} delay=1 timeout={{ service_startup_timeout }}
