@@ -19,10 +19,12 @@
   roles:
   - { role: 'shared/deploy_backend', backend_name: 'broker', backend_role: 'example-consumer'}
   - { role: 'broker/upgrade_backend', backend_name: 'broker', backend_role: 'example-consumer'}
+  - { role: 'shared/check_backend_health', port: 8080 }
 
 - hosts: "&{{ target_env }}:&broker-producer"
   remote_user: "root"
   become: 'yes'
   roles:
   - { role: 'shared/deploy_backend', backend_name: 'broker', backend_role: 'example-producer'}
-  - { role: 'broker/run_backend', backend_name: 'broker', backend_role: 'example-producer'}
+  - { role: 'broker/upgrade_backend', backend_name: 'broker', backend_role: 'example-producer'}
+  - { role: 'shared/check_backend_health', port: 8080 }
