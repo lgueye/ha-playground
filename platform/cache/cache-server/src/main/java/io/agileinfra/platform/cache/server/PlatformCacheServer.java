@@ -1,4 +1,4 @@
-package io.agileinfra.platform.cache;
+package io.agileinfra.platform.cache.server;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
