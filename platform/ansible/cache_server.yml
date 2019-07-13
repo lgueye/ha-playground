@@ -1,7 +1,7 @@
 # usage
 # export ANSIBLE_TF_DIR=../terraform/ && ansible-playbook --vault-id ~/.ansible_vault_pass.txt -i /etc/ansible/terraform.py cache_server.yml -e "target_env=staging rev=`git log -1 --pretty='%h'`"
 
-# Locally register inventory hosts
+# Build
 - hosts: 'localhost'
   connection: 'local'
   gather_facts: yes
@@ -15,4 +15,5 @@
   - { role: 'geerlingguy.java', when: "ansible_os_family == 'Debian'", java_packages: ['openjdk-8-jdk']}
   - { role: 'shared/deploy_backend', backend_name: 'cache', backend_role: 'server'}
   - { role: 'cache/upgrade_backend', backend_name: 'cache', backend_role: 'server'}
+  - { role: 'shared/check_backend_health', target_port: "{{ hazelcast_ports.gossip }}" }
 
