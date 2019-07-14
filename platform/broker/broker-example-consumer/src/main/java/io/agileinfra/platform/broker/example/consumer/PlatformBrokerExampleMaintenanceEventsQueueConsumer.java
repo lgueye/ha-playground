@@ -1,6 +1,6 @@
 package io.agileinfra.platform.broker.example.consumer;
 
-import io.agileinfra.platform.broker.client.SensorEventDto;
+import io.agileinfra.platform.dto.SensorEventDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.annotation.RabbitHandler;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
