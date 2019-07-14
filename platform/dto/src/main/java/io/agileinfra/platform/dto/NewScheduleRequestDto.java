@@ -1,10 +1,11 @@
-package io.agileinfra.platform.broker.client;
+package io.agileinfra.platform.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
 import java.time.Instant;
 
 /**
@@ -14,10 +15,11 @@ import java.time.Instant;
 @Builder(toBuilder = true)
 @NoArgsConstructor
 @AllArgsConstructor
-public class ScheduleDto {
+public class NewScheduleRequestDto implements Serializable, IdReader {
 	private String id;
-	private String destination;
+	private String exchange;
+	private String routingKey;
 	private Object message;
+	private ScheduleStatus status;
 	private Instant timestamp;
-
 }

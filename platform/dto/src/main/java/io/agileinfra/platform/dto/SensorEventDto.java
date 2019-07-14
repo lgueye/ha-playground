@@ -1,10 +1,11 @@
-package io.agileinfra.platform.broker.client;
+package io.agileinfra.platform.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
 import java.time.Instant;
 
 /**
@@ -14,7 +15,7 @@ import java.time.Instant;
 @Builder(toBuilder = true)
 @NoArgsConstructor
 @AllArgsConstructor
-public class SensorEventDto {
+public class SensorEventDto implements Serializable, IdReader {
 	private String id;
 	private String businessId;
 	private SensorState state;

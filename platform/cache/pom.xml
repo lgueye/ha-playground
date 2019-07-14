@@ -17,6 +17,10 @@
     </modules>
     <dependencies>
         <dependency>
+            <groupId>io.agileinfra.platform</groupId>
+            <artifactId>platform-dto</artifactId>
+        </dependency>
+        <dependency>
             <groupId>com.hazelcast</groupId>
             <artifactId>hazelcast</artifactId>
         </dependency>

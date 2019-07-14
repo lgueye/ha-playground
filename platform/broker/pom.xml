@@ -14,4 +14,10 @@
         <module>broker-example-consumer</module>
         <module>broker-example-producer</module>
     </modules>
+    <dependencies>
+        <dependency>
+            <groupId>io.agileinfra.platform</groupId>
+            <artifactId>platform-dto</artifactId>
+        </dependency>
+    </dependencies>
 </project>

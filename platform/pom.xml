@@ -6,6 +6,7 @@
     <version>1.0.0</version>
     <packaging>pom</packaging>
     <modules>
+        <module>dto</module>
         <module>cache</module>
         <module>store</module>
         <module>broker</module>
@@ -188,8 +189,6 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot</artifactId>
-            <version>2.1.6.RELEASE</version>
-            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>
