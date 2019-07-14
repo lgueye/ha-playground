@@ -10,6 +10,7 @@
         <module>cache</module>
         <module>store</module>
         <module>broker</module>
+        <module>scheduler</module>
     </modules>
     <properties>
         <commons-codec.version>1.11</commons-codec.version>
@@ -123,6 +124,16 @@
             <dependency>
                 <groupId>io.agileinfra.platform</groupId>
                 <artifactId>platform-cache-client</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.agileinfra.platform</groupId>
+                <artifactId>platform-dto</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.agileinfra.platform</groupId>
+                <artifactId>platform-scheduler-client</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
