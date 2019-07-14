@@ -18,8 +18,13 @@ import java.io.IOException;
 @Configuration
 @Slf4j
 public class PlatformCacheClientConfiguration {
-    @Bean
-    public HazelcastInstance getHazelcastClientInstance(@Value("${spring.hazelcast.config}") final File configFile) throws IOException {
-        ClientConfig clientConfig = new XmlClientConfigBuilder(configFile).build();
-        return HazelcastClient.newHazelcastClient(clientConfig);
-    }}
+	@Bean
+	public HazelcastInstance hazelcastInstance(@Value("${spring.hazelcast.config}") final File configFile) throws IOException {
+		ClientConfig clientConfig = new XmlClientConfigBuilder(configFile).build();
+		return HazelcastClient.newHazelcastClient(clientConfig);
+	}
+	@Bean
+	public PlatformCacheClient cacheClient(final HazelcastInstance hazelcastInstance) {
+		return new PlatformCacheClient(hazelcastInstance);
+	}
+}
