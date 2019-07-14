@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
 import org.springframework.amqp.support.converter.MessageConverter;
 import org.springframework.context.annotation.Bean;
@@ -33,6 +34,11 @@ public class PlatformBrokerClientConfiguration {
 				.featuresToDisable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES) // do not fail on unknown properties because they are likely to
 				.modules(new JavaTimeModule()) //
 				.build());
+	}
+
+	@Bean
+	public PlatformBrokerClient brokerClient(final AmqpTemplate amqpTemplate) {
+		return new PlatformBrokerClient(amqpTemplate);
 	}
 
 }
