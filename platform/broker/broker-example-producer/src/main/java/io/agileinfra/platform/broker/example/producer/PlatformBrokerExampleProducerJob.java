@@ -34,10 +34,10 @@ public class PlatformBrokerExampleProducerJob implements CommandLineRunner {
 					.id(UUID.randomUUID().toString()) //
 					.businessId(sensorBusinessId) //
 					.timestamp(anHourAgo.plus(Duration.ofMinutes(i))) //
-					.state(SensorState.on) //
+					.state(i % 2 == 0 ? SensorState.off : SensorState.on) //
 					.build();
 			final String routingKey = "care.events";
-			template.convertAndSend(directExchangeName, routingKey, event);
+			brokerClient.publish(event, directExchangeName, routingKey);
 			log.info(">>>>>>>>>>> Sent {} to exchange {} with routing key {}", event.getId(), directExchangeName, routingKey);
 		});
 		IntStream.range(0, 60).boxed().forEach(i -> {
@@ -45,10 +45,10 @@ public class PlatformBrokerExampleProducerJob implements CommandLineRunner {
 					.id(UUID.randomUUID().toString()) //
 					.businessId(sensorBusinessId) //
 					.timestamp(anHourAgo.plus(Duration.ofMinutes(i))) //
-					.state(SensorState.off) //
+					.state(i % 2 == 0 ? SensorState.off : SensorState.on) //
 					.build();
 			final String routingKey = "maintenance.events";
-			template.convertAndSend(directExchangeName, routingKey, event);
+			brokerClient.publish(event, directExchangeName, routingKey);
 			log.info(">>>>>>>>>>> Sent {} to exchange {} with routing key {}", event.getId(), directExchangeName, routingKey);
 		});
 		IntStream.range(0, 60).boxed().forEach(i -> {
@@ -56,11 +56,10 @@ public class PlatformBrokerExampleProducerJob implements CommandLineRunner {
 					.id(UUID.randomUUID().toString()) //
 					.businessId(sensorBusinessId) //
 					.timestamp(anHourAgo.plus(Duration.ofMinutes(i))) //
-					.state(SensorState.off) //
+					.state(i % 2 == 0 ? SensorState.off : SensorState.on) //
 					.build();
-			final ScheduleDto schedule = ScheduleDto.builder().id(UUID.randomUUID().toString()) //
-					.destination("any.routing.queue") //
-					.message(event) //
+			final NewScheduleRequestDto schedule = NewScheduleRequestDto.builder().id(UUID.randomUUID().toString()) //
+					.exchange(directExchangeName).routingKey("care.events").message(event) //
 					.timestamp(now.plus(Duration.ofMinutes(i))) //
 					.build();
 			final String routingKey = "#";
