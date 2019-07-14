@@ -1,6 +1,6 @@
 package io.agileinfra.platform.cache.example.producer;
 
-import com.hazelcast.core.HazelcastInstance;
+import io.agileinfra.platform.cache.client.PlatformCacheClient;
 import io.agileinfra.platform.cache.client.PlatformCacheClientConfiguration;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
@@ -13,7 +13,7 @@ import org.springframework.context.annotation.Import;
 public class PlatformCacheExampleProducerConfiguration {
 
 	@Bean
-	public PlatformCacheExampleProducerJob platformBrokerExampleProducerJob(final HazelcastInstance hazelcastInstance) {
-		return new PlatformCacheExampleProducerJob(hazelcastInstance);
+	public PlatformCacheExampleProducerJob platformBrokerExampleProducerJob(final PlatformCacheClient cacheClient) {
+		return new PlatformCacheExampleProducerJob(cacheClient);
 	}
 }
