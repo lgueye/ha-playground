@@ -1,11 +1,11 @@
 package io.agileinfra.platform.broker.example.producer;
 
-import io.agileinfra.platform.broker.client.ScheduleDto;
-import io.agileinfra.platform.broker.client.SensorEventDto;
-import io.agileinfra.platform.broker.client.SensorState;
+import io.agileinfra.platform.broker.client.PlatformBrokerClient;
+import io.agileinfra.platform.dto.NewScheduleRequestDto;
+import io.agileinfra.platform.dto.SensorEventDto;
+import io.agileinfra.platform.dto.SensorState;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.boot.CommandLineRunner;
 
 import java.time.Duration;
@@ -20,7 +20,7 @@ import java.util.stream.IntStream;
 @Slf4j
 public class PlatformBrokerExampleProducerJob implements CommandLineRunner {
 
-	private final AmqpTemplate template;
+	private final PlatformBrokerClient brokerClient;
 
 	@Override
 	public void run(String... args) {
@@ -63,7 +63,7 @@ public class PlatformBrokerExampleProducerJob implements CommandLineRunner {
 					.timestamp(now.plus(Duration.ofMinutes(i))) //
 					.build();
 			final String routingKey = "#";
-			template.convertAndSend(fanoutExchangeName, routingKey, schedule);
+			brokerClient.publish(schedule, fanoutExchangeName, routingKey);
 			log.info(">>>>>>>>>>> Sent {} to exchange {} with routing key {}", event.getId(), fanoutExchangeName, routingKey);
 		});
 	}
