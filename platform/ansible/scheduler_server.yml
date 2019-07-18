@@ -1,0 +1,19 @@
+# usage
+# export ANSIBLE_TF_DIR=../terraform/ && ansible-playbook --vault-id ~/.ansible_vault_pass.txt -i /etc/ansible/terraform.py scheduler_server.yml -e "target_env=staging rev=`git log -1 --pretty='%h'`"
+
+# Build
+- hosts: 'localhost'
+  connection: 'local'
+  gather_facts: yes
+  roles:
+  - { role: 'shared/build_platform' }
+
+- hosts: "&{{ target_env }}:&scheduler-server"
+  remote_user: "root"
+  become: 'yes'
+  roles:
+  - { role: 'geerlingguy.java', when: "ansible_os_family == 'Debian'", java_packages: ['openjdk-8-jdk']}
+  - { role: 'shared/deploy_backend', backend_name: 'scheduler', backend_role: 'server'}
+  - { role: 'scheduler/upgrade_backend', backend_name: 'scheduler', backend_role: 'server'}
+  - { role: 'shared/check_backend_health', target_port: "8080" }
+
