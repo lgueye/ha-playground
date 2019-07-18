@@ -11,7 +11,6 @@ import org.springframework.stereotype.Component;
 
 import java.time.Duration;
 import java.time.Instant;
-import java.util.Optional;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
@@ -31,11 +30,7 @@ public class PlatformSchedulerScheduleRequestReactor {
 	@RabbitHandler
 	public void onMessage(NewScheduleRequestDto request) {
 		log.info("<<<<<<<<<<<< Received request [" + request + "] from {}...", "schedules");
-		Optional<NewScheduleRequestDto> persistedOptional = cacheClient.getOne("schedules", request.getId());
-		if (persistedOptional.isPresent()) {
-			log.info("Request {} already persisted by another node", request);
-			return;
-		}
+		// final NewScheduleRequestDto detached = request.toBuilder().status(ScheduleStatus.pending).build();
 		cacheClient.save("schedules", request);
 		final Runnable runnable = new NewScheduleRequestExecution(request, brokerClient, cacheClient);
 		scheduledExecutorService.schedule(runnable, Duration.between(Instant.now(), request.getTimestamp()).toMillis(), TimeUnit.MILLISECONDS);
