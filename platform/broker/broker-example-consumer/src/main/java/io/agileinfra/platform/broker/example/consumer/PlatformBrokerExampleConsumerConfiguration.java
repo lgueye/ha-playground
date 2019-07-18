@@ -21,17 +21,13 @@ import java.util.List;
  * Created by <a href="mailto:louis.gueye@domo-safety.com">Louis Gueye</a>.
  */
 @Configuration
-@Import({PlatformBrokerClientConfiguration.class, TopicsConfig.class})
+@Import({PlatformBrokerClientConfiguration.class})
 @Slf4j
 public class PlatformBrokerExampleConsumerConfiguration {
 
 	@Bean
 	public QueuesConfig queuesConfig() {
 		return new QueuesConfig();
-	}
-	@Bean
-	public TopicsConfig topicsConfig() {
-		return new TopicsConfig();
 	}
 
 	@Bean
@@ -54,6 +50,11 @@ public class PlatformBrokerExampleConsumerConfiguration {
 			});
 		});
 		return declarables;
+	}
+
+	@Bean
+	public TopicsConfig topicsConfig() {
+		return new TopicsConfig();
 	}
 
 	@Bean
