@@ -1,0 +1,14 @@
+[Unit]
+Description=Systemd service for {{ backend_name }}-{{ backend_role }}
+After=syslog.target network-online.target
+Wants=network-online.target
+
+[Service]
+Restart=on-failure
+RestartSec=10
+StartLimitInterval=0
+
+ExecStart={{ platform_home_dir }}/{{ backend_name }}-{{ backend_role }}.jar --spring.config.location={{ platform_home_dir }}/{{ backend_name }}-{{ backend_role }}.yaml --spring.hazelcast.config={{ platform_home_dir }}/{{ backend_name }}-{{ backend_role }}.xml
+
+[Install]
+WantedBy=multi-user.target

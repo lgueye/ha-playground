@@ -1,0 +1,4 @@
+---
+galaxy_info:
+  author: Louis Gueye
+  description: Required steps to upgrade a spring-boot based backend (stop backend, configure properties file, configure logback, configure systemd, etc)
