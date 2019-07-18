@@ -41,7 +41,7 @@ public class PlatformSchedulerExampleProducerJob implements CommandLineRunner {
 					.exchange(targetExchangeName) //
 					.routingKey(targetRoutingKey) //
 					.message(event) //
-					.timestamp(now.plus(Duration.ofMinutes(i))) //
+					.timestamp(now.plus(Duration.ofSeconds(i + 3))) //
 					.build();
 			brokerClient.publish(schedule, fanoutExchangeName, "#");
 			log.info(">>>>>>>>>>> Sent {} to exchange {} with routing key {}", event.getId(), fanoutExchangeName, "#");
