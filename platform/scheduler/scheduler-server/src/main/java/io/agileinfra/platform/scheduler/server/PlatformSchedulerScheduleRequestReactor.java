@@ -6,7 +6,10 @@ import io.agileinfra.platform.dto.NewScheduleRequestDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.core.ExchangeTypes;
-import org.springframework.amqp.rabbit.annotation.*;
+import org.springframework.amqp.rabbit.annotation.Exchange;
+import org.springframework.amqp.rabbit.annotation.Queue;
+import org.springframework.amqp.rabbit.annotation.QueueBinding;
+import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Component;
 
 import java.time.Duration;
@@ -19,7 +22,6 @@ import java.util.concurrent.TimeUnit;
  */
 @Component
 @Slf4j
-@RabbitListener(autoStartup = "false", bindings = @QueueBinding(value = @Queue, exchange = @Exchange(name = "careassist_schedules_topics", type = ExchangeTypes.FANOUT)))
 @RequiredArgsConstructor
 public class PlatformSchedulerScheduleRequestReactor {
 
@@ -27,7 +29,7 @@ public class PlatformSchedulerScheduleRequestReactor {
 	private final PlatformBrokerClient brokerClient;
 	private final PlatformCacheClient cacheClient;
 
-	@RabbitHandler
+	@RabbitListener(autoStartup = "false", bindings = @QueueBinding(value = @Queue, exchange = @Exchange(name = "careassist_schedules_topics", type = ExchangeTypes.FANOUT)))
 	public void onMessage(NewScheduleRequestDto request) {
 		log.info("<<<<<<<<<<<< Received request [" + request + "] from {}...", "careassist_schedules_topics");
 		// final NewScheduleRequestDto detached = request.toBuilder().status(ScheduleStatus.pending).build();

@@ -4,7 +4,10 @@ import io.agileinfra.platform.dto.NewScheduleRequestDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.core.ExchangeTypes;
-import org.springframework.amqp.rabbit.annotation.*;
+import org.springframework.amqp.rabbit.annotation.Exchange;
+import org.springframework.amqp.rabbit.annotation.Queue;
+import org.springframework.amqp.rabbit.annotation.QueueBinding;
+import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Component;
 
 /**
@@ -12,12 +15,11 @@ import org.springframework.stereotype.Component;
  */
 @Component
 @Slf4j
-@RabbitListener(autoStartup = "false", bindings = @QueueBinding(value = @Queue, exchange = @Exchange(name = "careassist_schedules_topics", type = ExchangeTypes.FANOUT)))
 @RequiredArgsConstructor
 public class PlatformBrokerExampleSchedulesTopicConsumer {
 
-	@RabbitHandler
+    @RabbitListener(bindings = @QueueBinding(value = @Queue, exchange = @Exchange(name = "careassist_schedules_topics", type = ExchangeTypes.FANOUT)))
 	public void onMessage(NewScheduleRequestDto schedule) {
-		log.info("<<<<<<<<<<<< Received event [" + schedule + "] from {}...", "schedules");
+		log.info("<<<<<<<<<<<< Received event [" + schedule + "] from {}...", "careassist_schedules_topics");
 	}
 }
