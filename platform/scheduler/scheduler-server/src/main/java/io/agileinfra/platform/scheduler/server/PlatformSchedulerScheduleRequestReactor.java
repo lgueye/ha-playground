@@ -29,7 +29,7 @@ public class PlatformSchedulerScheduleRequestReactor {
 	private final PlatformBrokerClient brokerClient;
 	private final PlatformCacheClient cacheClient;
 
-	@RabbitListener(autoStartup = "false", bindings = @QueueBinding(value = @Queue, exchange = @Exchange(name = "careassist_schedules_topics", type = ExchangeTypes.FANOUT)))
+	@RabbitListener(bindings = @QueueBinding(value = @Queue, exchange = @Exchange(name = "careassist_schedules_topics", type = ExchangeTypes.FANOUT)))
 	public void onMessage(NewScheduleRequestDto request) {
 		log.info("<<<<<<<<<<<< Received request [" + request + "] from {}...", "careassist_schedules_topics");
 		// final NewScheduleRequestDto detached = request.toBuilder().status(ScheduleStatus.pending).build();

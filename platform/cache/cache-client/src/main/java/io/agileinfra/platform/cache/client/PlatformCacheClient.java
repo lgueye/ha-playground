@@ -32,7 +32,7 @@ public class PlatformCacheClient {
 	}
 
 	public <T> Optional<T> getOne(String collection, String id) {
-		return Optional.ofNullable((T) hazelcastInstance.getMap(collection).get(id));
+		return Optional.ofNullable((T) getMap(collection).get(id));
 	}
 
 	public void remove(String collection, String id) {
@@ -40,7 +40,7 @@ public class PlatformCacheClient {
 	}
 
 	public <T extends IdReader> void save(String collection, T object) {
-		hazelcastInstance.getMap(collection).put(object.getId(), object);
+		getMap(collection).put(object.getId(), object);
 	}
 
 	public <T> Map<String, T> getMap(String collection) {
