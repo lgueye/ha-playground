@@ -53,6 +53,7 @@ public class PlatformBrokerClientConfiguration {
 	public List<Declarable> directBindings(final AmqpAdmin amqpAdmin, final QueuesConfig queuesConfig) {
 		log.info("Creating Destinations...");
 		final List<Declarable> declarables = Lists.newArrayList();
+		if (queuesConfig == null) return declarables;
 		queuesConfig.getExchanges().forEach(exchange -> {
 			Exchange ex = ExchangeBuilder.directExchange(exchange.getId()).durable(true).build();
 			amqpAdmin.declareExchange(ex);
@@ -80,6 +81,7 @@ public class PlatformBrokerClientConfiguration {
 	public List<Declarable> fanoutBindings(final AmqpAdmin amqpAdmin, final TopicsConfig topicsConfig) {
 		log.info("Creating Destinations...");
 		final List<Declarable> declarables = Lists.newArrayList();
+		if (topicsConfig == null) return declarables;
 		topicsConfig.getExchanges().forEach(exchange -> {
 			Exchange ex = ExchangeBuilder.fanoutExchange(exchange.getId()).durable(true).build();
 			declarables.add(ex);
