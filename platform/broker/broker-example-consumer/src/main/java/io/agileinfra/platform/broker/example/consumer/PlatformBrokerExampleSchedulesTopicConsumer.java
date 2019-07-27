@@ -3,8 +3,8 @@ package io.agileinfra.platform.broker.example.consumer;
 import io.agileinfra.platform.dto.NewScheduleRequestDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.amqp.rabbit.annotation.RabbitHandler;
-import org.springframework.amqp.rabbit.annotation.RabbitListener;
+import org.springframework.amqp.core.ExchangeTypes;
+import org.springframework.amqp.rabbit.annotation.*;
 import org.springframework.stereotype.Component;
 
 /**
@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
  */
 @Component
 @Slf4j
-@RabbitListener(queues = "schedules")
+@RabbitListener(autoStartup = "false", bindings = @QueueBinding(value = @Queue, exchange = @Exchange(name = "careassist_schedules_topics", type = ExchangeTypes.FANOUT)))
 @RequiredArgsConstructor
 public class PlatformBrokerExampleSchedulesTopicConsumer {
 
