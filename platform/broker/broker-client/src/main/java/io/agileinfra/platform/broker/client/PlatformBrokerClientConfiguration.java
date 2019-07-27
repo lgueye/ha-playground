@@ -12,6 +12,7 @@ import org.springframework.amqp.support.converter.MessageConverter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
+import org.springframework.util.CollectionUtils;
 
 import java.util.List;
 
@@ -53,7 +54,8 @@ public class PlatformBrokerClientConfiguration {
 	public List<Declarable> directBindings(final AmqpAdmin amqpAdmin, final QueuesConfig queuesConfig) {
 		log.info("Creating Destinations...");
 		final List<Declarable> declarables = Lists.newArrayList();
-		if (queuesConfig == null) return declarables;
+		if (queuesConfig == null || CollectionUtils.isEmpty(queuesConfig.getExchanges()))
+			return declarables;
 		queuesConfig.getExchanges().forEach(exchange -> {
 			Exchange ex = ExchangeBuilder.directExchange(exchange.getId()).durable(true).build();
 			amqpAdmin.declareExchange(ex);
@@ -81,7 +83,8 @@ public class PlatformBrokerClientConfiguration {
 	public List<Declarable> fanoutBindings(final AmqpAdmin amqpAdmin, final TopicsConfig topicsConfig) {
 		log.info("Creating Destinations...");
 		final List<Declarable> declarables = Lists.newArrayList();
-		if (topicsConfig == null) return declarables;
+		if (topicsConfig == null || CollectionUtils.isEmpty(topicsConfig.getExchanges()))
+			return declarables;
 		topicsConfig.getExchanges().forEach(exchange -> {
 			Exchange ex = ExchangeBuilder.fanoutExchange(exchange.getId()).durable(true).build();
 			declarables.add(ex);
