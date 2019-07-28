@@ -26,7 +26,7 @@
   ignore_errors: 'yes'
 
 - name: interpolate {{ backend_name }}-{{ backend_role }} properties config
-  template: src=backend.properties.j2 dest={{ platform_deploy_home_dir }}/{{ backend_name }}-{{ backend_role }}.properties
+  template: src={{ backend_name }}-{{ backend_role }}.properties.j2 dest={{ platform_deploy_home_dir }}/{{ backend_name }}-{{ backend_role }}.properties
 
 - name: link {{ backend_name }}-{{ backend_role }}.properties
   file: state='link' src={{ platform_deploy_home_dir }}/{{ backend_name }}-{{ backend_role }}.properties dest={{ platform_home_dir }}/{{ backend_name }}-{{ backend_role }}.properties

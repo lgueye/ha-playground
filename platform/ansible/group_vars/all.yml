@@ -3,7 +3,7 @@ domain: "agileinfra.io"
 htpasswd_path: '/etc/nginx/passwdfile'
 
 # systemd shared vars
-service_startup_timeout: 60
+service_startup_timeout: 120
 servicename: 'careassist'
 
 service_password: !vault |

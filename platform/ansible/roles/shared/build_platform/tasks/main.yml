@@ -10,6 +10,6 @@
   git: repo={{ platform_repo }} dest={{ platform_clone_dir }} version={{ rev }} accept_hostkey='true'
 
 - name: building platform located at {{ platform_clone_dir }}
-  command: mvn clean install
+  command: mvn -T2 clean install
   args:
     chdir: "{{ platform_clone_dir }}/platform"

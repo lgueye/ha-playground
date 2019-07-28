@@ -62,7 +62,7 @@ public class PlatformBrokerExampleProducerJob implements CommandLineRunner {
 					.exchange(directExchangeName).routingKey("care.events").message(event) //
 					.timestamp(now.plus(Duration.ofMinutes(i))) //
 					.build();
-			final String routingKey = "#";
+			final String routingKey = ".";
 			brokerClient.publish(schedule, fanoutExchangeName, routingKey);
 			log.info(">>>>>>>>>>> Sent {} to exchange {} with routing key {}", event.getId(), fanoutExchangeName, routingKey);
 		});

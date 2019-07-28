@@ -13,6 +13,8 @@ spring:
     port: {{ rabbitmq.port }}
     username: {{ rabbitmq.user }}
     password: {{ rabbitmq.password }}
+  hazelcast:
+    config: {{ platform_home_dir }}/{{ backend_name }}-{{ backend_role }}.xml
 
 queues:
   exchanges:

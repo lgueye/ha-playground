@@ -18,7 +18,7 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class PlatformBrokerExampleSchedulesTopicConsumer {
 
-    @RabbitListener(bindings = @QueueBinding(value = @Queue, exchange = @Exchange(name = "careassist_schedules_topics", type = ExchangeTypes.FANOUT)))
+	@RabbitListener(bindings = @QueueBinding(value = @Queue, exchange = @Exchange(name = "careassist_schedules_topics", type = ExchangeTypes.FANOUT)))
 	public void onMessage(NewScheduleRequestDto schedule) {
 		log.info("<<<<<<<<<<<< Received event [" + schedule + "] from {}...", "careassist_schedules_topics");
 	}

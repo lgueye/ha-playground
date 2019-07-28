@@ -15,11 +15,11 @@ import java.time.Instant;
 @Builder(toBuilder = true)
 @NoArgsConstructor
 @AllArgsConstructor
-public class NewScheduleRequestDto implements Serializable, IdReader {
+public class NewScheduleRequestDto<T> implements Serializable, IdReader {
 	private String id;
 	private String exchange;
 	private String routingKey;
-	private Object message;
+	private T message;
 	private ScheduleStatus status;
 	private Instant timestamp;
 }

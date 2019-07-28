@@ -8,7 +8,7 @@ Restart=on-failure
 RestartSec=10
 StartLimitInterval=0
 
-ExecStart={{ platform_home_dir }}/{{ backend_name }}-{{ backend_role }}.jar --spring.config.location={{ platform_home_dir }}/{{ backend_name }}-{{ backend_role }}.properties
+ExecStart={{ platform_home_dir }}/{{ backend_name }}-{{ backend_role }}.jar --spring.config.location={{ platform_home_dir }}/{{ backend_name }}-{{ backend_role }}.yaml
 
 [Install]
 WantedBy=multi-user.target

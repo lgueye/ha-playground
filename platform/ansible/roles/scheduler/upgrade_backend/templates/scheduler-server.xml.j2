@@ -1,0 +1,87 @@
+<hazelcast-client xmlns="http://www.hazelcast.com/schema/client-config"
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xsi:schemaLocation="http://www.hazelcast.com/schema/client-config
+http://www.hazelcast.com/schema/client-config/hazelcast-client-config-4.0.xsd">
+  <group>
+    <name>{{ target_env }}</name>
+    <password>{{ hazelcast_cluster_password }}</password>
+  </group>
+  <instance-name>{{ backend_name }}-{{ backend_role }}</instance-name>
+  <properties>
+    <property name="hazelcast.discovery.enabled">true</property>
+    <property name="hazelcast.shutdownhook.enabled">false</property>
+  </properties>
+
+  <network>
+    <!-- Enable a Consul based discovery strategy -->
+    <discovery-strategies>
+
+      <discovery-strategy enabled="true" class="org.bitsofinfo.hazelcast.discovery.consul.ConsulDiscoveryStrategy">
+      <properties>
+      <!--  hostname or IP of the consul server -->
+      <property name="consul-host">localhost</property>
+      <!--  port of the consul server -->
+      <property name="consul-port">8500</property>
+      <!--
+      Name of the Consul service that will be used to discover peer hazelcast services in Consul
+
+    IF a ConsulRegistrator is configured below: this node will be registered under this same service
+      name. This name should be UNIQUE to your hazelcast cluster! (i.e. like your group name above..)
+      -->
+      <property name="consul-service-name">cache</property>
+
+      <!--
+      When discovering peer nodes, only return those that are healthy (true)
+      If false, all nodes, regardless of health (from Consul's perspective) will be returned
+
+      This DOES NOT apply to the first call to discoverNodes() but only subsequent calls (if any)
+      to account for any Consul service health-check you have, who's interval might be longer than
+      the period of time which the service is registered and the first health check runs.
+      -->
+      <property name="consul-healthy-only">true</property>
+
+      <!--
+      Comma separated list of Consul service tags that will be used when registering services
+      in Consul who are part of the same cluster and will be discovered and treated as peer
+      members of the hazelcast cluster.
+      -->
+      <property name="consul-service-tags">hazelcast,{{ target_env }}</property>
+
+
+      <!--
+      If you quickly start an entire hz cluster at the exact same time, and
+      all hazelcast services are registered with Consul at the same time, its
+      possible they may all discover ONLY themselves as members, leading to a cluster
+      that can never be fully discovered. This small delay can assist with avoiding
+      that problem. @see https://github.com/hazelcast/hazelcast/issues/6813
+      -->
+      <property name="consul-discovery-delay-ms">10000</property>
+
+
+      <!--
+      If you want to enable TLS, you can set this option to "true". If you enable TLS,
+      then the "consul-port" property above needs to be set to the correct https port
+      that is configured on the Consul server.
+
+    OPTIONALLY: In addition, either "consul-ssl-server-cert-file-path" or "consul-ssl-server-cert-base64"
+      properties below would have to be provided if TLS is enabled and your consul server(s) present
+      a self-signed non-JRE trusted certificate.
+
+      -->
+
+      <property name="consul-ssl-enabled">false</property>
+      <!--
+
+      If this set to false, it will override the hostnameVerifier to be used by the client to verify
+      the endpoint's hostname against it's identification information and always mark it as verified.
+
+      You can set this to true, to use the default hostnameVerifier that will strict match the endpoint's
+      hostname against the client identification.
+
+      -->
+      <property name="consul-ssl-server-hostname-verify">false</property>
+      </properties>
+      </discovery-strategy>
+    </discovery-strategies>
+  </network>
+</hazelcast-client>
