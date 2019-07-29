@@ -6,7 +6,15 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.amqp.core.*;
+import org.springframework.amqp.core.AmqpAdmin;
+import org.springframework.amqp.core.AmqpTemplate;
+import org.springframework.amqp.core.Binding;
+import org.springframework.amqp.core.BindingBuilder;
+import org.springframework.amqp.core.Declarable;
+import org.springframework.amqp.core.Exchange;
+import org.springframework.amqp.core.ExchangeBuilder;
+import org.springframework.amqp.core.Queue;
+import org.springframework.amqp.core.QueueBuilder;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
 import org.springframework.amqp.support.converter.MessageConverter;
 import org.springframework.context.annotation.Bean;
@@ -52,7 +60,7 @@ public class PlatformBrokerClientConfiguration {
 
 	@Bean
 	public List<Declarable> directBindings(final AmqpAdmin amqpAdmin, final QueuesConfig queuesConfig) {
-		log.info("Creating Destinations...");
+		log.info("Creating direct exchanges...");
 		final List<Declarable> declarables = Lists.newArrayList();
 		if (queuesConfig == null || CollectionUtils.isEmpty(queuesConfig.getExchanges()))
 			return declarables;
@@ -81,7 +89,7 @@ public class PlatformBrokerClientConfiguration {
 
 	@Bean
 	public List<Declarable> fanoutBindings(final AmqpAdmin amqpAdmin, final TopicsConfig topicsConfig) {
-		log.info("Creating Destinations...");
+		log.info("Creating fanout exchanges...");
 		final List<Declarable> declarables = Lists.newArrayList();
 		if (topicsConfig == null || CollectionUtils.isEmpty(topicsConfig.getExchanges()))
 			return declarables;
@@ -89,17 +97,17 @@ public class PlatformBrokerClientConfiguration {
 			Exchange ex = ExchangeBuilder.fanoutExchange(exchange.getId()).durable(true).build();
 			declarables.add(ex);
 			amqpAdmin.declareExchange(ex);
-			exchange.getRoutes().forEach(queue -> {
-				Queue q = QueueBuilder.nonDurable().autoDelete().build();
-				log.info("Successfully created queue {}.", q.getName());
-				declarables.add(q);
-				amqpAdmin.declareQueue(q);
-				Binding b = BindingBuilder.bind(q).to(ex).with(queue.getKey()).noargs();
-				amqpAdmin.declareBinding(b);
-				declarables.add(b);
-				log.info("Successfully bound exchange {} to queue {} with routing key {}.", ex.getName(), q.getName(), b.getRoutingKey());
+			// exchange.getRoutes().forEach(queue -> {
+			// Queue q = QueueBuilder.nonDurable().autoDelete().build();
+			// log.info("Successfully created queue {}.", q.getName());
+			// declarables.add(q);
+			// amqpAdmin.declareQueue(q);
+			// Binding b = BindingBuilder.bind(q).to(ex).with(queue.getKey()).noargs();
+			// amqpAdmin.declareBinding(b);
+			// declarables.add(b);
+			// log.info("Successfully bound exchange {} to queue {} with routing key {}.", ex.getName(), q.getName(), b.getRoutingKey());
+			// });
 			});
-		});
 		return declarables;
 	}
 
