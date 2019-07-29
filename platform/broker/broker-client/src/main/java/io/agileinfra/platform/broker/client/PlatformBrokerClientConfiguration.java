@@ -68,6 +68,7 @@ public class PlatformBrokerClientConfiguration {
 			Exchange ex = ExchangeBuilder.directExchange(exchange.getId()).durable(true).build();
 			amqpAdmin.declareExchange(ex);
 			declarables.add(ex);
+			log.info("Successfully created exchange {} ({}).", ex.getName(), ex.getType());
 			exchange.getRoutes().forEach(queue -> {
 				Queue q = QueueBuilder.durable(queue.getId()).build();
 				log.info("Successfully created queue {}.", queue.getId());
@@ -97,6 +98,7 @@ public class PlatformBrokerClientConfiguration {
 			Exchange ex = ExchangeBuilder.fanoutExchange(exchange.getId()).durable(true).build();
 			declarables.add(ex);
 			amqpAdmin.declareExchange(ex);
+			log.info("Successfully created exchange {} ({}).", ex.getName(), ex.getType());
 			// exchange.getRoutes().forEach(queue -> {
 			// Queue q = QueueBuilder.nonDurable().autoDelete().build();
 			// log.info("Successfully created queue {}.", q.getName());
