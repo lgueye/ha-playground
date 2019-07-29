@@ -25,7 +25,7 @@ public class NewScheduleRequestExecution implements Runnable {
 		final ILock lock = cacheClient.getLock(requestId);
 		// Get lock as soon as possible
 		if (!lock.tryLock()) {
-			log.info("Ignored {}: request is already being executed (locked)", requestId);
+			log.info("################## Ignored {}: request is already being executed (locked)", requestId);
 			return;
 		}
 		// It might happen that the schedule is available for lock but just because another worker is already done processing
@@ -33,7 +33,7 @@ public class NewScheduleRequestExecution implements Runnable {
 		// On the other hand if the schedule is present then we can just proceed
 		final Optional<NewScheduleRequestDto> persistedOptional = cacheClient.getOne("schedules", requestId);
 		if (!persistedOptional.isPresent()) {
-			log.info("Request {} has already been executed", requestId);
+			log.info("################## Request {} has already been executed", requestId);
 			return;
 		}
 		brokerClient.publish(request.getMessage(), request.getExchange(), request.getRoutingKey());

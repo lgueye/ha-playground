@@ -37,10 +37,13 @@ public class PlatformCacheClient {
 
 	public void remove(String collection, String id) {
 		hazelcastInstance.getMap(collection).remove(id);
+		log.info("################## Removed object {} from {} store ...", id, collection);
 	}
 
 	public <T extends IdReader> void save(String collection, T object) {
-		getMap(collection).put(object.getId(), object);
+		final String id = object.getId();
+		getMap(collection).put(id, object);
+		log.info("################## Saved object {} in {} store ...", id, collection);
 	}
 
 	public <T> Map<String, T> getMap(String collection) {

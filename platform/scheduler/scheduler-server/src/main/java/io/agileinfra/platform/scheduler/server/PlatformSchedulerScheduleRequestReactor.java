@@ -32,9 +32,10 @@ public class PlatformSchedulerScheduleRequestReactor {
 	@RabbitListener(bindings = @QueueBinding(value = @Queue, exchange = @Exchange(name = "careassist_schedules_topics", type = ExchangeTypes.FANOUT)))
 	public void onMessage(NewScheduleRequestDto request) {
 		log.info("<<<<<<<<<<<< Received request [" + request + "] from {}...", "careassist_schedules_topics");
-		// final NewScheduleRequestDto detached = request.toBuilder().status(ScheduleStatus.pending).build();
 		cacheClient.save("schedules", request);
 		final Runnable runnable = new NewScheduleRequestExecution(request, brokerClient, cacheClient);
-		scheduledExecutorService.schedule(runnable, Duration.between(Instant.now(), request.getTimestamp()).toMillis(), TimeUnit.MILLISECONDS);
+		final long delay = Duration.between(Instant.now(), request.getTimestamp()).toMillis();
+		scheduledExecutorService.schedule(runnable, delay, TimeUnit.MILLISECONDS);
+		log.info("############ Scheduled request {} in {}...", request.getId(), Duration.ofMillis(delay));
 	}
 }
