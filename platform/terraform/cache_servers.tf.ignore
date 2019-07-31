@@ -14,12 +14,12 @@ resource "digitalocean_droplet" "cache_server_01_droplet" {
   size = "${var.droplet_size}"
   private_networking = true
   ssh_keys = ["${var.ssh_fingerprint}"]
-  tags = ["${digitalocean_tag.target_env.name}","${digitalocean_tag.discovery_client_role.name}","${digitalocean_tag.cache_server_role.name}"]
+  tags = ["${digitalocean_tag.target_env.name}","${digitalocean_tag.discovery_client_role.name}","${digitalocean_tag.cache_server_role.name}","${digitalocean_tag.java_runtime_role.name}"]
 }
 
 resource "ansible_host" "cache_server_01_droplet" {
     inventory_hostname = "${digitalocean_droplet.cache_server_01_droplet.name}"
-    groups = ["${var.target_env}","${var.discovery_client_role}","${var.cache_server_role}","${var.primary_datacenter_role}"]
+    groups = ["${var.target_env}","${var.discovery_client_role}","${var.cache_server_role}","${var.primary_datacenter_role}","${var.java_runtime_role}"]
     vars {
       ansible_host = "${digitalocean_droplet.cache_server_01_droplet.ipv4_address}"
       ansible_python_interpreter = "${var.ansible_python_interpreter}"
@@ -34,12 +34,12 @@ resource "digitalocean_droplet" "cache_server_02_droplet" {
   size = "${var.droplet_size}"
   private_networking = true
   ssh_keys = ["${var.ssh_fingerprint}"]
-  tags = ["${digitalocean_tag.target_env.name}","${digitalocean_tag.discovery_client_role.name}","${digitalocean_tag.cache_server_role.name}"]
+  tags = ["${digitalocean_tag.target_env.name}","${digitalocean_tag.discovery_client_role.name}","${digitalocean_tag.cache_server_role.name}","${digitalocean_tag.java_runtime_role.name}"]
 }
 
 resource "ansible_host" "cache_server_02_droplet" {
     inventory_hostname = "${digitalocean_droplet.cache_server_02_droplet.name}"
-    groups = ["${var.target_env}","${var.discovery_client_role}","${var.cache_server_role}","${var.fallback_datacenter_role}"]
+    groups = ["${var.target_env}","${var.discovery_client_role}","${var.cache_server_role}","${var.fallback_datacenter_role}","${var.java_runtime_role}"]
     vars {
       ansible_host = "${digitalocean_droplet.cache_server_02_droplet.ipv4_address}"
       ansible_python_interpreter = "${var.ansible_python_interpreter}"
@@ -55,12 +55,12 @@ resource "digitalocean_droplet" "cache_server_03_droplet" {
   size = "${var.droplet_size}"
   private_networking = true
   ssh_keys = ["${var.ssh_fingerprint}"]
-  tags = ["${digitalocean_tag.target_env.name}","${digitalocean_tag.discovery_client_role.name}","${digitalocean_tag.cache_server_role.name}"]
+  tags = ["${digitalocean_tag.target_env.name}","${digitalocean_tag.discovery_client_role.name}","${digitalocean_tag.cache_server_role.name}","${digitalocean_tag.java_runtime_role.name}"]
 }
 
 resource "ansible_host" "cache_server_03_droplet" {
     inventory_hostname = "${digitalocean_droplet.cache_server_03_droplet.name}"
-    groups = ["${var.target_env}","${var.discovery_client_role}","${var.cache_server_role}","${var.ternary_datacenter_role}"]
+    groups = ["${var.target_env}","${var.discovery_client_role}","${var.cache_server_role}","${var.ternary_datacenter_role}","${var.java_runtime_role}"]
     vars {
       ansible_host = "${digitalocean_droplet.cache_server_03_droplet.ipv4_address}"
       ansible_python_interpreter = "${var.ansible_python_interpreter}"

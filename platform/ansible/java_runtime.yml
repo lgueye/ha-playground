@@ -1,0 +1,8 @@
+# usage
+# export ANSIBLE_TF_DIR=../terraform/ && ansible-playbook --vault-id ~/.ansible_vault_pass.txt -i /etc/ansible/terraform.py java_runtime.yml -e "target_env=staging"
+
+- hosts: "&{{ target_env }}:&java-runtime"
+  remote_user: "root"
+  become: 'yes'
+  roles:
+  - { role: 'geerlingguy.java', when: "ansible_os_family == 'Debian'", java_packages: ['openjdk-8-jdk']}

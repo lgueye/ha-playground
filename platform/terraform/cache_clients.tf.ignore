@@ -29,7 +29,7 @@ resource "digitalocean_droplet" "cache_consumer_droplet" {
   size = "${var.droplet_size}"
   private_networking = true
   ssh_keys = ["${var.ssh_fingerprint}"]
-  tags = ["${var.target_env}","${var.cache_client_role}","${var.cache_consumer_role}","${var.discovery_client_role}"]
+  tags = ["${var.target_env}","${var.cache_client_role}","${var.cache_consumer_role}","${var.discovery_client_role}","${var.java_runtime_role}"]
 }
 
 resource "ansible_host" "cache_consumer_droplet" {
@@ -38,7 +38,8 @@ resource "ansible_host" "cache_consumer_droplet" {
     "${var.target_env}",
     "${var.discovery_client_role}",
     "${var.cache_client_role}",
-    "${var.cache_consumer_role}"]
+    "${var.cache_consumer_role}",
+    "${var.java_runtime_role}"]
   vars {
     ansible_host = "${digitalocean_droplet.cache_consumer_droplet.ipv4_address}"
     ansible_python_interpreter = "${var.ansible_python_interpreter}"
@@ -55,12 +56,12 @@ resource "digitalocean_droplet" "cache_producer_droplet" {
   size = "${var.droplet_size}"
   private_networking = true
   ssh_keys = ["${var.ssh_fingerprint}"]
-  tags = ["${var.target_env}","${var.cache_client_role}","${var.cache_producer_role}","${var.discovery_client_role}"]
+  tags = ["${var.target_env}","${var.cache_client_role}","${var.cache_producer_role}","${var.discovery_client_role}","${var.java_runtime_role}"]
 }
 
 resource "ansible_host" "cache_producer_droplet" {
   inventory_hostname = "${digitalocean_droplet.cache_producer_droplet.name}"
-  groups = ["${var.target_env}","${var.discovery_client_role}","${var.cache_client_role}","${var.cache_producer_role}"]
+  groups = ["${var.target_env}","${var.discovery_client_role}","${var.cache_client_role}","${var.cache_producer_role}","${var.java_runtime_role}"]
   vars {
     ansible_host = "${digitalocean_droplet.cache_producer_droplet.ipv4_address}"
     ansible_python_interpreter = "${var.ansible_python_interpreter}"

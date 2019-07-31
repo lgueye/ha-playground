@@ -53,3 +53,11 @@ variable "discovery_client_role" {
 resource "digitalocean_tag" "discovery_client_role" {
   name = "${var.discovery_client_role}"
 }
+
+# java shared vars
+variable "java_runtime_role" {
+  default = "java-runtime"
+}
+resource "digitalocean_tag" "java_runtime_role" {
+  name = "${var.java_runtime_role}"
+}
