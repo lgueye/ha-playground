@@ -1,1 +1,5 @@
-cluster_formation.peer_discovery_backend = rabbit_peer_discovery_consul
+cluster_formation.peer_discovery_backend = rabbit_peer_discovery_classic_config
+
+{% for host in groups['broker-server'] %}
+cluster_formation.classic_config.nodes.{{ loop.index }} = {{ hostvars[host].ansible_hostname }}.node.consul
+{% endfor %}
