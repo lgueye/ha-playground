@@ -4,6 +4,10 @@
   rabbitmq_plugin: names=rabbitmq_management,rabbitmq_peer_discovery_consul state=enabled
 
 # configure discovery
+- name: 'extrapolate rabbitmq-env.conf.j2 to /etc/rabbitmq/rabbitmq-env.conf'
+  template: src='rabbitmq-env.conf.j2' dest='/etc/rabbitmq/rabbitmq-env.conf'
+
+# configure discovery
 - name: 'extrapolate rabbitmq.conf.j2 to /etc/rabbitmq/rabbitmq.conf'
   template: src='rabbitmq.conf.j2' dest='/etc/rabbitmq/rabbitmq.conf'
 
