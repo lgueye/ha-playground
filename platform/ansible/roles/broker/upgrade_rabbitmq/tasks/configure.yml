@@ -15,6 +15,18 @@
 - name: 'enabling plugins (management, consul discovery)'
   rabbitmq_plugin: names=rabbitmq_management,rabbitmq_peer_discovery_consul state=enabled
 
+- name: 'ensuring that the RabbitMQ service is restarted'
+  service: name=rabbitmq-server state=restarted enabled=yes
+
+- name: 'performing rabbitmqctl stop_app on node'
+  shell: "rabbitmqctl stop_app"
+
+- name: 'performing rabbitmqctl reset on node'
+  shell: "rabbitmqctl reset"
+
+- name: 'performing rabbitmqctl start_app on node'
+  shell: "rabbitmqctl start_app"
+
 # configure ha mode
 - name: 'configure ha mode (all nodes participate in HA mode and all exchanges are replicated/synced)'
   rabbitmq_policy:
@@ -37,17 +49,3 @@
         write_priv: .*
     state: present
   ignore_errors: yes
-
-- name: 'ensuring that the RabbitMQ service is restarted'
-  service: name=rabbitmq-server state=restarted enabled=yes
-
-- name: 'performing rabbitmqctl stop_app on node'
-  shell: "rabbitmqctl stop_app"
-
-- name: 'performing rabbitmqctl reset on node'
-  shell: "rabbitmqctl reset"
-
-- name: 'performing rabbitmqctl start_app on node'
-  shell: "rabbitmqctl start_app"
-
-
