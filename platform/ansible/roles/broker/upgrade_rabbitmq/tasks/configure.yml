@@ -12,8 +12,8 @@
 - name: 'extrapolate .erlang.cookie.j2 to /var/lib/rabbitmq/.erlang.cookie'
   template: src='.erlang.cookie.j2' dest='/var/lib/rabbitmq/.erlang.cookie'
 
-- name: 'enabling plugins (management, consul discovery)'
-  rabbitmq_plugin: names=rabbitmq_management,rabbitmq_peer_discovery_consul state=enabled
+- name: 'enabling plugins (management)'
+  rabbitmq_plugin: names=rabbitmq_management state=enabled
 
 - name: 'ensuring that the RabbitMQ service is restarted'
   service: name=rabbitmq-server state=restarted enabled=yes
@@ -49,3 +49,12 @@
         write_priv: .*
     state: present
   ignore_errors: yes
+
+- name: "deploy rabbitmq discovery definition rabbitmq.json.j2 to {{ consul_config_dir }}/client/rabbitmq.json"
+  template: src="rabbitmq.json.j2" dest="{{ consul_config_dir }}/client/rabbitmq.json"
+
+- name: "restart {{ consul_product }}.service"
+  service: name="{{ consul_product }}" state='restarted'
+
+- name: "wait for port {{ consul_ports.http }} to be available"
+  wait_for: port="{{ consul_ports.http }}" delay='1' timeout="{{ service_startup_timeout }}"

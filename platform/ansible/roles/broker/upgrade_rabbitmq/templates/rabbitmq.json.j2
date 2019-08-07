@@ -1,0 +1,21 @@
+{
+  "service": {
+    "name": "rabbitmq",
+    "port": {{ consul_ports.server }},
+    "tags": ["{{ target_env }}", "rabbitmq"],
+    "checks": [
+      {
+         "id": "rabbitmq_port_connectivity",
+         "name": "rabbitmq port connectivity",
+         "args": ["rabbitmq-diagnostics", "-q", "check_port_connectivity"],
+         "interval": "10s"
+      },
+      {
+        "id": "rabbitmq_node_health",
+        "name": "rabbitmq node health",
+         "args": ["rabbitmq-diagnostics", "-q", "node_health_check"],
+         "interval": "10s"
+      }
+    ]
+  }
+}
