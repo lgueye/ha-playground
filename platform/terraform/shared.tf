@@ -37,10 +37,6 @@ variable "droplet_size" {
 # target environment
 variable "target_env" {}
 
-resource "digitalocean_tag" "target_env" {
-  name = "${var.target_env}"
-}
-
 # ansible vars
 variable "ansible_python_interpreter" {
   default = "/usr/bin/python3"
@@ -50,14 +46,8 @@ variable "ansible_python_interpreter" {
 variable "discovery_client_role" {
   default = "discovery-client"
 }
-resource "digitalocean_tag" "discovery_client_role" {
-  name = "${var.discovery_client_role}"
-}
 
 # java shared vars
 variable "java_runtime_role" {
   default = "java-runtime"
-}
-resource "digitalocean_tag" "java_runtime_role" {
-  name = "${var.java_runtime_role}"
 }
