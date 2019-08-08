@@ -2,7 +2,7 @@ package io.agileinfra.platform.scheduler.server;
 
 import io.agileinfra.platform.broker.client.PlatformBrokerClient;
 import io.agileinfra.platform.cache.client.PlatformCacheClient;
-import io.agileinfra.platform.dto.NewScheduleRequestDto;
+import io.agileinfra.platform.dto.SensorEventScheduleRequestDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.core.ExchangeTypes;
@@ -30,7 +30,7 @@ public class PlatformSchedulerScheduleRequestReactor {
 	private final PlatformCacheClient cacheClient;
 
 	@RabbitListener(bindings = @QueueBinding(value = @Queue, exchange = @Exchange(name = "careassist_schedules_topics", type = ExchangeTypes.FANOUT)))
-	public void onMessage(NewScheduleRequestDto request) {
+	public void onMessage(SensorEventScheduleRequestDto request) {
 		log.info("<<<<<<<<<<<< Received request [" + request + "] from {}...", "careassist_schedules_topics");
 		cacheClient.save("schedules", request);
 		final Runnable runnable = new NewScheduleRequestExecution(request, brokerClient, cacheClient);

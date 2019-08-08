@@ -1,7 +1,7 @@
 package io.agileinfra.platform.broker.example.producer;
 
 import io.agileinfra.platform.broker.client.PlatformBrokerClient;
-import io.agileinfra.platform.dto.NewScheduleRequestDto;
+import io.agileinfra.platform.dto.SensorEventScheduleRequestDto;
 import io.agileinfra.platform.dto.SensorEventDto;
 import io.agileinfra.platform.dto.SensorState;
 import lombok.RequiredArgsConstructor;
@@ -58,7 +58,7 @@ public class PlatformBrokerExampleProducerJob implements CommandLineRunner {
 					.timestamp(anHourAgo.plus(Duration.ofMinutes(i))) //
 					.state(i % 2 == 0 ? SensorState.off : SensorState.on) //
 					.build();
-			final NewScheduleRequestDto schedule = NewScheduleRequestDto.builder().id(UUID.randomUUID().toString()) //
+			final SensorEventScheduleRequestDto schedule = SensorEventScheduleRequestDto.builder().id(UUID.randomUUID().toString()) //
 					.exchange(directExchangeName).routingKey("care.events").message(event) //
 					.timestamp(now.plus(Duration.ofMinutes(i))) //
 					.build();
