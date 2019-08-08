@@ -12,7 +12,6 @@
   remote_user: "root"
   become: 'yes'
   roles:
-  - { role: 'geerlingguy.java', when: "ansible_os_family == 'Debian'", java_packages: ['openjdk-8-jdk']}
   - { role: 'shared/deploy_backend', backend_name: 'cache', backend_role: 'server'}
   - { role: 'cache/upgrade_backend', backend_name: 'cache', backend_role: 'server'}
   - { role: 'shared/check_backend_health', target_port: "{{ hazelcast_ports.gossip }}" }

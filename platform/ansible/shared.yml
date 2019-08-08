@@ -1,0 +1,20 @@
+# usage
+# export ANSIBLE_TF_DIR=../terraform/ && ansible-playbook --vault-id ~/.ansible_vault_pass.txt -i /etc/ansible/terraform.py register_inventory_hosts.yml -e "target_env=staging"
+
+- name: register known hosts
+  import_playbook: register_inventory_hosts.yml
+
+- name: install and configure discovery servers
+  import_playbook: discovery_server.yml
+
+- name: install and configure discovery clients
+  import_playbook: discovery_client.yml
+
+- name: install java runtime
+  import_playbook: java_runtime.yml
+
+- hosts: 'localhost'
+  connection: 'local'
+  gather_facts: yes
+  roles:
+  - { role: 'shared/build_platform' }
