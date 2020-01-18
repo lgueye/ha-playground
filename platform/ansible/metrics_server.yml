@@ -1,0 +1,8 @@
+# usage
+# export ANSIBLE_TF_DIR=../terraform/ && ansible-playbook --vault-id ~/.ansible_vault_pass.txt -i /etc/ansible/terraform.py metrics_server.yml -e "target_env=staging"
+
+- hosts: "&{{ target_env }}:&metrics-server"
+  remote_user: "root"
+  become: 'yes'
+  roles:
+  - { role: 'cloudalchemy.prometheus', prometheus_config_file: 'metrics/server/templates/prometheus.yml'}

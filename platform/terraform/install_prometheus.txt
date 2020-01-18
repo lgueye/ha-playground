@@ -1,0 +1,43 @@
+sudo adduser prometheus
+sudo su - prometheus
+curl -LO https://github.com/prometheus/prometheus/releases/download/v2.14.0/prometheus-2.14.0.linux-amd64.tar.gz
+sha256sum prometheus-2.14.0.linux-amd64.tar.gz
+curl -LO https://github.com/prometheus/alertmanager/releases/download/v0.19.0/alertmanager-0.19.0.linux-amd64.tar.gz
+sha256sum alertmanager-0.19.0.linux-amd64.tar.gz
+tar xvf prometheus-2.14.0.linux-amd64.tar.gz
+vi /etc/prometheus/prometheus.yml
+sudo chown prometheus:prometheus /etc/prometheus
+sudo chown prometheus:prometheus /var/lib/prometheus
+sudo ln -s /home/prometheus/prometheus-2.14.0.linux-amd64 /usr/local/prometheus
+sudo ln -s /usr/local/prometheus/prometheus /usr/local/bin/prometheus
+sudo ln -s /usr/local/prometheus/promtool /usr/local/bin/promtool
+sudo chown prometheus:prometheus /usr/local/bin/prometheus
+sudo chown prometheus:prometheus /usr/local/bin/promtool
+sudo ln -s /usr/local/prometheus/console /etc/prometheus/
+ll /etc/prometheus/console
+ll /etc/prometheus/console/
+sudo ln -s /usr/local/prometheus/console /etc/prometheus/console
+ll /etc/prometheus/console/
+ll /usr/local/prometheus/console
+ll /usr/local/prometheus
+ll /usr/local/prometheus/
+sudo ln -s /usr/local/prometheus/consoles /etc/prometheus/consoles
+ll /etc/prometheus/consoles
+ll /etc/prometheus/consoles/
+sudo ln -s /usr/local/prometheus/console_libraries  /etc/prometheus/console_libraries
+ll /etc/prometheus/console_libraries/
+sudo chown -R prometheus:prometheus /etc/prometheus/consoles
+sudo chown -R prometheus:prometheus /etc/prometheus/console_libraries
+rm -f /home/prometheus/prometheus-2.14.0.linux-amd64.tar.gz
+ll /etc/prometheus/
+rm -f /etc/prometheus/console
+ll /etc/prometheus/
+sudo su - prometheus
+sudo -u prometheus /usr/local/bin/prometheus     --config.file /etc/prometheus/prometheus.yml     --storage.tsdb.path /var/lib/prometheus/     --web.console.templates=/etc/prometheus/consoles     --web.console.libraries=/etc/prometheus/console_libraries
+sudo su - prometheus
+sudo -u prometheus /usr/local/bin/prometheus     --config.file /etc/prometheus/prometheus.yml     --storage.tsdb.path /var/lib/prometheus/     --web.console.templates=/etc/prometheus/consoles     --web.console.libraries=/etc/prometheus/console_libraries
+sudo vi /etc/systemd/system/prometheus.service
+sudo systemctl daemon-reload
+sudo systemctl start prometheus
+sudo systemctl status prometheus
+sudo systemctl enable prometheus
