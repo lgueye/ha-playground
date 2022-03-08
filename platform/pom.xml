@@ -20,7 +20,7 @@
         <git-commit-id-plugin.version>2.2.5</git-commit-id-plugin.version>
         <guava.version>27.0.1-jre</guava.version>
         <hazelcast-consul-discovery-spi.version>1.0-RC9</hazelcast-consul-discovery-spi.version>
-        <hazelcast.version>3.11</hazelcast.version>
+        <hazelcast.version>5.1</hazelcast.version>
         <jackson.version>2.9.9</jackson.version>
         <jacoco-maven-plugin.version>0.8.2</jacoco-maven-plugin.version>
         <java.version>${maven.compiler.source}</java.version>
